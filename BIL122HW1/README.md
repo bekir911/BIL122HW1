@@ -1,2 +1,0 @@
-# BIL122HW1
-Program that prints isosceles triangles made up of stars.  You have 4 options; 0 is exit, 1 is regular isosceles triangle, 2 is upside down version of 1, 3 is actually making 1 then 2, so it makes a diamond shape. After you chose the shape, it needs a size. For 1st and 2nd it has to be an odd integer in [3,15] interval. For 3rd one the interval becoems [5,15]. If your inputs are not valid, you have 2 chances to fix it. If you make 3 mistakes, you are out.
