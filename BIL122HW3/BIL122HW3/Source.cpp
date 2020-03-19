@@ -1,3 +1,7 @@
+//Bekir Öztürk
+//19120205061
+//BIL 122 Ödev-3
+
 #include <iostream>
 #include <vector>
 #include <iomanip>
@@ -13,7 +17,7 @@ using namespace std;
  */
 long long recursiveFunction(int numberOfStones)
 {
-	if (1 == numberOfStones) {	//base case 1
+	if (1 == numberOfStones) {		//base case 1
 		return 1;
 	}
 	else if (2 == numberOfStones) {	//base case 2
@@ -24,6 +28,7 @@ long long recursiveFunction(int numberOfStones)
 	}
 	else {	//if its not base case it goes into recursive
 			//i wrote down for 5 and 6. then i realized how it works
+			//if you have N stones to jump, you can jump 1, 2 or 3. after that you will have N-1, N-2 or N-3 stones. it keeps going on
 		return recursiveFunction(numberOfStones - 1) + recursiveFunction(numberOfStones - 2) + recursiveFunction(numberOfStones - 3);
 	}
 }
@@ -48,15 +53,14 @@ long long iterativeFunction(int& numberOfStones)
 		return temp3;
 	}
 
-	for (int i = 0; i < numberOfStones - 4; ++i) {	//if its not base case it counts till it is. -4 comes from number of temps
+	for (int i = 0; i < numberOfStones - 3; ++i) {	//if its not base case it counts till it is. -3 comes from number of base cases
+		temp4 = temp1 + temp2 + temp3;
 		temp1 = temp2;
 		temp2 = temp3;
 		temp3 = temp4;
-		temp4 = temp1 + temp2 + temp3;
 	}
 	return temp4;
 }
-
 
 // Test icin kullanilacaktir ve bu fonksiyonda bir duzenleme yapilamaz
 int main()
