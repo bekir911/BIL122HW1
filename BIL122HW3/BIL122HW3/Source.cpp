@@ -77,7 +77,7 @@ int main()
 
 	cout.imbue(locale(""));
 
-	for (auto i = 1; i <, MAX_NUMBER_OF_STONES; ++i)
+	for (auto i = 1; i < MAX_NUMBER_OF_STONES; ++i)
 	{
 
 #ifdef _TEST_ITERATIVE_
