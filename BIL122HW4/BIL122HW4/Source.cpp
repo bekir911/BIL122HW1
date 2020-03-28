@@ -60,18 +60,18 @@ int main() {
 
 
 	// Sample Quad and Triangle Objects
-	try{
-		auto sampleQuad = Quadrilateral{ Point(4, 5), 20, 20 };
+	try {
+		auto sampleQuad = Quadrilateral{ Point(1, 6), Point(1, 7), Point(1, 1), Point(6, 2) };
 		cout << "Color of Sample Quad:" << sampleQuad.getColorAsString() << endl;
 		cout << "koseler: " << sampleQuad.getA().x << "," << sampleQuad.getA().y << " " << sampleQuad.getB().x << "," << sampleQuad.getB().y << " " << endl;
-		cout << sampleQuad.isValid() << endl;
+		cout << "gecerli ise 1 olur:          " << sampleQuad.isValid() << endl;
 	}
 	catch (invalid_argument& ex)
 	{
 		cout << "Invalid Quad: " << ex.what() << endl;
 	}
-	
-	
+
+
 	/*auto sampleQuad = Quadrilateral{ Point(4, 5), 20, 20 };
 	cout << "Color of Sample Quad:" << sampleQuad.getColorAsString() << endl;
 	cout << "koseler: " << sampleQuad.getA().x << "," << sampleQuad.getA().y << " " << sampleQuad.getB().x << "," << sampleQuad.getB().y << " " << endl;

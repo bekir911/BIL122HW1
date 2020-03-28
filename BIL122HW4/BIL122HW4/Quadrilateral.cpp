@@ -201,6 +201,30 @@ bool Quadrilateral::isValid() const {
 			return false;
 		}
 	}
+	if (a.x == b.x && a.x == c.x) {			//ABC x'leri ayný ise
+		return false;
+	}
+	else if (a.x == b.x && a.x == d.x) {	//ABD x'leri ayný ise
+		return false;
+	}
+	else if (a.x == d.x && a.x == c.x) {	//ACD x'leri ayný ise
+		return false;
+	}
+	else if (d.x == b.x && b.x == c.x) {	//BCD x'leri ayný ise
+		return false;
+	}
+	else if (a.y == b.y && a.y == c.y) {	//ABC y'leri ayný ise
+		return false;
+	}
+	else if (a.y == b.y && a.y == d.y) {	//ABD y'leri ayný ise
+		return false;
+	}
+	else if (a.y == d.y && a.y == c.y) {	//ACD y'leri ayný ise
+		return false;
+	}
+	else if (d.y == b.y && b.y == c.y) {	//BCD y'leri ayný ise
+		return false;
+	}
 	return true;
 }
 
