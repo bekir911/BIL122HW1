@@ -1,6 +1,6 @@
-////Bekir Öztürk
+////Bekir Ã–ztÃ¼rk
 ////19120205061
-////BIL 122 Ödev-3
+////BIL 122 Ã–dev-3
 
 #include <iostream>
 #include <vector>
@@ -9,7 +9,7 @@
 
 using namespace std;
 
-//aþaðýdaki satýrlarý yoruma alarak kodunuzu farklý þekillerde test edebilirsiniz.
+//aÃ¾aÃ°Ã½daki satÃ½rlarÃ½ yoruma alarak kodunuzu farklÃ½ Ã¾ekillerde test edebilirsiniz.
 #define _TEST_ITERATIVE_
 #define _TEST_RECURSIVE_
 
@@ -21,7 +21,7 @@ using namespace std;
  */
 long long recursiveFunction(int numberOfStones)
 {
-	if (1 == numberOfStones) {		//base case 1
+	if (1 == numberOfStones) {	//base case 1
 		return 1;
 	}
 	else if (2 == numberOfStones) {	//base case 2
@@ -77,7 +77,7 @@ int main()
 
 	cout.imbue(locale(""));
 
-	for (auto i = 1; i < MAX_NUMBER_OF_STONES; ++i)
+	for (auto i = 1; i <= MAX_NUMBER_OF_STONES; ++i)
 	{
 
 #ifdef _TEST_ITERATIVE_
