@@ -1,23 +1,47 @@
 #include <iostream>
 #include <vector>
+#include <random>	//BEN EKLEDÝM
+#include <ctime>	//BEN EKLEDÝM. RANDOM ÝÇÝN GEREKLÝYDÝ
 #include "Triangle.h"
 #include "Quadrilateral.h"
 
 using namespace std;
 
-//// Rastgele olarak Triangle nesneleri olusturur ve parametre olarak verilen vektore ekler.
-///* Triangle nesnelerinde yer alacak noktalarýn x ve y deðerleri [0, 100] arasýnda olabilir.
-//   Þeklin renk deðeri de rastgele olarak belirlenmelidir.
-//*/
-//void fillTriangles(vector<Triangle>& v, int numberOfItems = 100)
-//{
-//
-//}
-//
-//// Rastgele olarak Quadrilateral nesneleri olusturur ve parametre olarak verilen vektore ekler.
-///* Quadrilateral nesnelerinde yer alacak noktalarýn x ve y deðerleri [0, 100] arasýnda olabilir.
-//   Þeklin renk deðeri de rastgele olarak belirlenmelidir.
-//*/
+std::random_device rastgele;
+std::mt19937 calis(rastgele());
+std::uniform_int_distribution<std::mt19937::result_type> motor(0, 100);
+
+// Rastgele olarak Triangle nesneleri olusturur ve parametre olarak verilen vektore ekler.
+/* Triangle nesnelerinde yer alacak noktalarýn x ve y deðerleri [0, 100] arasýnda olabilir.
+   Þeklin renk deðeri de rastgele olarak belirlenmelidir.
+*/
+void fillTriangles(vector<Triangle>& v, int numberOfItems = 100){
+	for (auto i{ 0 }; i < numberOfItems; ++i) {
+		Point p1 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
+		Point p2 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
+		Point p3 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
+		Triangle::Color x = Triangle::Color::GREEN;
+		try {
+			auto randomColor = motor(calis) % 6;
+			auto color = static_cast<Triangle::Color>(randomColor);
+			Triangle triangle(p1, p2, p3, color);
+			v.push_back(triangle);
+		}
+		catch (invalid_argument& ex) {
+			cout << "Invalid Triangle: " << ex.what() << endl;
+		}
+	}
+}
+
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//auto sampleQuad = Quadrilateral{ Point(1, 6), Point(1, 7), Point(1, 1), Point(6, 2) };
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+// Rastgele olarak Quadrilateral nesneleri olusturur ve parametre olarak verilen vektore ekler.
+/* Quadrilateral nesnelerinde yer alacak noktalarýn x ve y deðerleri [0, 100] arasýnda olabilir.
+   Þeklin renk deðeri de rastgele olarak belirlenmelidir.
+*/
 //void fillQuads(vector<Quadrilateral>& v, int numberOfItems = 100)
 //{
 //
@@ -29,16 +53,15 @@ using namespace std;
 //template<class T>
 //int search(const vector<T>& v, const T& key)
 //{
-//	return 0;//DEÐÝÞTÝR
+//
 //}
-
-
+//
+//
 //template<class T>
 //int sortByPerimeter(vector<T>& v)
 //{
-//	return 0;//DEÐÝÞTÝR
+//
 //}
-
 
 //int main()
 //{
@@ -164,17 +187,6 @@ using namespace std;
 //	return 0;
 //}
 
-
-
-
-
-
-
-
-
-
-
-
 int main() {
 	// Sample Quad and Triangle Objects
 	try {
@@ -189,7 +201,7 @@ int main() {
 	}
 
 	try {
-		auto sampleTriangle = Triangle{ Point(4, 5),  Point(2, 2),  Point(4, 9) };
+		auto sampleTriangle = Triangle{ Point(4, 5),  Point(2, 2),  Point(4, 9) ,Triangle::Color::BLUE };
 		cout << "Color of Sample Triangle:" << sampleTriangle.getColorAsString() << endl;
 		cout << "kose: " << sampleTriangle.getA().x << "," << sampleTriangle.getA().y << " " << sampleTriangle.getB().x << "," << sampleTriangle.getB().y << " " << sampleTriangle.getC().x << "," << sampleTriangle.getC().y << endl;
 		cout << "gecerli ise 1 olur:          " << sampleTriangle.isValid() << endl;
@@ -198,6 +210,10 @@ int main() {
 		cout << "Invalid Quad: " << ex.what() << endl;
 	}
 
+	
+
+	auto vectorOfTriangles = vector<Triangle>{};
+	fillTriangles(vectorOfTriangles);
 
 	return 0;
 }

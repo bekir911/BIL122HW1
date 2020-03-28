@@ -2,7 +2,7 @@
 
 const map<Triangle::Color, string> Triangle::colorToStringMap = { {Triangle::Color::PINK, "Pink"},
 {Triangle::Color::RED, "Red"},
-{Triangle::Color::BLUE, "Blue"},	//BU SATIRI ELLE YAZDIM HATA VEREBÝLÝR
+{Triangle::Color::BLUE, "Blue"},	
 {Triangle::Color::WHITE, "White"},
 {Triangle::Color::BLACK, "Black"},
 {Triangle::Color::GREEN, "Green"}
@@ -84,7 +84,7 @@ bool Triangle::setA(const Point& pt) {
 	return true;
 }
 
-bool Triangle::setB(const Point& pt) {	//EXCEPTION EKLEYEBILIRIM
+bool Triangle::setB(const Point& pt) {
 	b.x = pt.x;
 	b.y = pt.y;
 	if (false == isValid()) {
@@ -130,8 +130,8 @@ bool Triangle::isValid() const {
 
 void Triangle::printInfo() const noexcept {
 	cout << "Triangle" << endl;
-	cout << "Number of points: 3\nPoints: (";					// Rectangle demiþsiniz ama hepsi öyle olmak zorunda deðil
-	cout << a.x << "," << a.y << "," << "), (";					// Vakit bulabilirsem öyle olanlarý özel olarak yazdýrmak için bir þeyler yazabilirim
+	cout << "Number of points: 3\nPoints: (";					
+	cout << a.x << "," << a.y << "," << "), (";					
 	cout << b.x << "," << b.y << "," << "), (";
 	cout << c.x << "," << c.y << "," << "), (\nPerimeter: ";
 	cout << getPerimeter() << "\nColor: ";
