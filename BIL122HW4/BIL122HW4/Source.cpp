@@ -15,12 +15,11 @@ std::uniform_int_distribution<std::mt19937::result_type> motor(0, 100);
 /* Triangle nesnelerinde yer alacak noktalarýn x ve y deðerleri [0, 100] arasýnda olabilir.
    Þeklin renk deðeri de rastgele olarak belirlenmelidir.
 */
-void fillTriangles(vector<Triangle>& v, int numberOfItems = 100){
+void fillTriangles(vector<Triangle>& v, int numberOfItems = 100) {
 	for (auto i{ 0 }; i < numberOfItems; ++i) {
 		Point p1 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
 		Point p2 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
 		Point p3 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
-		Triangle::Color x = Triangle::Color::GREEN;
 		try {
 			auto randomColor = motor(calis) % 6;
 			auto color = static_cast<Triangle::Color>(randomColor);
@@ -33,30 +32,39 @@ void fillTriangles(vector<Triangle>& v, int numberOfItems = 100){
 	}
 }
 
-			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			//auto sampleQuad = Quadrilateral{ Point(1, 6), Point(1, 7), Point(1, 1), Point(6, 2) };
-			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
 // Rastgele olarak Quadrilateral nesneleri olusturur ve parametre olarak verilen vektore ekler.
 /* Quadrilateral nesnelerinde yer alacak noktalarýn x ve y deðerleri [0, 100] arasýnda olabilir.
    Þeklin renk deðeri de rastgele olarak belirlenmelidir.
 */
-//void fillQuads(vector<Quadrilateral>& v, int numberOfItems = 100)
-//{
-//
-//}
-//
-//
+void fillQuads(vector<Quadrilateral>& v, int numberOfItems = 100) {
+	for (auto i{ 0 }; i < numberOfItems; ++i) {
+		Point p1 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
+		Point p2 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
+		Point p3 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
+		Point p4 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
+		try {
+			auto randomColor = motor(calis) % 6;
+			auto color = static_cast<Quadrilateral::Color>(randomColor);
+			Quadrilateral quadrilateral(p1, p2, p3, p4, color);
+			v.push_back(quadrilateral);
+		}
+		catch (invalid_argument& ex) {
+			cout << "Invalid Quadrilateral: " << ex.what() << endl;
+		}
+	}
+
+}
+
+
 ///* Verilen Triangle veya Rectangle vektörününde çevre uzunluðu ve renk deðeri eþleþen ilk elemanýn indeksini döndürür.
 //Eleman bulunamazsa -1 döndürülür.*/
-//template<class T>
-//int search(const vector<T>& v, const T& key)
-//{
-//
-//}
-//
-//
+template<class T>
+int search(const vector<T>& v, const T& key){
+
+
+}
+
+
 //template<class T>
 //int sortByPerimeter(vector<T>& v)
 //{
@@ -201,7 +209,7 @@ int main() {
 	}
 
 	try {
-		auto sampleTriangle = Triangle{ Point(4, 5),  Point(2, 2),  Point(4, 9) ,Triangle::Color::BLUE };
+		auto sampleTriangle = Triangle{ Point(29, 41),  Point(78, 63),  Point(78, 6) ,Triangle::Color::BLUE };
 		cout << "Color of Sample Triangle:" << sampleTriangle.getColorAsString() << endl;
 		cout << "kose: " << sampleTriangle.getA().x << "," << sampleTriangle.getA().y << " " << sampleTriangle.getB().x << "," << sampleTriangle.getB().y << " " << sampleTriangle.getC().x << "," << sampleTriangle.getC().y << endl;
 		cout << "gecerli ise 1 olur:          " << sampleTriangle.isValid() << endl;
@@ -210,10 +218,15 @@ int main() {
 		cout << "Invalid Quad: " << ex.what() << endl;
 	}
 
-	
+
+
+
 
 	auto vectorOfTriangles = vector<Triangle>{};
 	fillTriangles(vectorOfTriangles);
+
+	auto vectorOfquads = vector<Quadrilateral>{};
+	fillQuads(vectorOfquads);
 
 	return 0;
 }
