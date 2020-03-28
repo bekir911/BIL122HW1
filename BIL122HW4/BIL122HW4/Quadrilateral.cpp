@@ -8,41 +8,44 @@ const map<Quadrilateral::Color, string> Quadrilateral::colorToStringMap = { {Qua
 };
 
 Quadrilateral::Quadrilateral(const Point& a, const Point& c, const Color& color) {
-	setA(a);
-	setC(c);
+	this->a.x = a.x;
+	this->a.y = a.y;
+	this->c.x = c.x;
+	this->c.y = c.y;
+	this->b.x = c.x;
+	this->b.y = a.y;
+	this->d.x = a.x;
+	this->d.y = c.y;
 	this->color = color;
-	Point tempB;
-	Point tempD;
-	tempB.x = c.x;
-	tempB.y = a.y;
-	tempD.x = a.x;
-	tempD.y = c.y;
-	setB(tempB);
-	setD(tempD);
+	if (false == isValid()) {
+		throw invalid_argument("Hatali deger girdiniz.");
+	}
 }
 
 Quadrilateral::Quadrilateral(const Point& a, double width, double height, const Color& color) {
-	setA(a);
-	Point tempB;
-	Point tempC;
-	Point tempD;
-	tempB.y = this->a.y;
-	tempB.x = this->a.x + width;
-	tempC.x = tempB.x;
-	tempC.y = tempB.y - height;
-	tempD.y = tempC.y;
-	tempD.x = this->a.x;
-	setB(tempB);
-	setC(tempC);
-	setD(tempD);
+	a.x = a.x;
+	a.y = a.y;
+	b.x= this->a.x + width;
+	b.y= this->a.y;
+	c.x= b.x;
+	c.y= b.y - height;
+	d.x= b.y;
+	d.y= this->a.x;
 	this->color = color;
+	if (false == isValid()) {
+		throw invalid_argument("Hatali deger girdiniz.");
+	}
 }
 
 Quadrilateral::Quadrilateral(const Point& a, const Point& b, const Point& c, const Point& d, const Color& color) {
-	setA(a);
-	setB(b);
-	setC(c);
-	setD(d);
+	this->a.x = a.x;
+	this->a.y = a.y;
+	this->b.x = b.x;
+	this->b.y = b.y;
+	this->c.x = c.x;
+	this->c.y = c.y;
+	this->d.x = d.x;
+	this->d.y = d.y;
 	this->color = color;
 	if (false == isValid()) {
 		throw invalid_argument("Hatali deger girdiniz.");
@@ -50,10 +53,14 @@ Quadrilateral::Quadrilateral(const Point& a, const Point& b, const Point& c, con
 }
 
 Quadrilateral::Quadrilateral(const array<Point, NUMBER_OF_CORNERS>& pts, const Color& color) {
-	setA(pts[0]);
-	setB(pts[1]);
-	setC(pts[2]);
-	setD(pts[3]);
+	a.x = pts[0].x;
+	a.y = pts[0].y;
+	b.x = pts[1].x;
+	b.y = pts[1].y;
+	c.x = pts[2].x;
+	c.y = pts[2].y;
+	d.x = pts[3].x;
+	d.y = pts[3].y;
 	this->color = color;
 	if (false == isValid()) {
 		throw invalid_argument("Hatali deger girdiniz.");
@@ -85,7 +92,7 @@ string Quadrilateral::getColorAsString() const noexcept {
 }
 
 double Quadrilateral::getPerimeter() const noexcept {
-	double perimeter = a.distanceTo(b);
+	auto perimeter = a.distanceTo(b);
 	perimeter += b.distanceTo(c);
 	perimeter += c.distanceTo(d);
 	perimeter += d.distanceTo(a);
@@ -228,30 +235,43 @@ bool Quadrilateral::isValid() const {
 	return true;
 }
 
-bool Quadrilateral::setA(const Point& pt) {		//Tüm set harflerinde böyleydi ama ilklendirirken a'yý verip kontrol ettiðinde;
-	a.x = pt.x;									//diðerlerinin deðeri olmadýðý için hata veriyordu. Ben de constructor'lara taþýdým
+bool Quadrilateral::setA(const Point& pt) {		
+	a.x = pt.x;									
 	a.y = pt.y;
-	/*if (false == isValid()) {
+	if (false == isValid()) {
 		throw invalid_argument("Hatali deger girdiniz.");
-	}*/
+		return false;
+	}
 	return true;
 }
 
 bool Quadrilateral::setB(const Point& pt) {
 	b.x = pt.x;
 	b.y = pt.y;
+	if (false == isValid()) {
+		throw invalid_argument("Hatali deger girdiniz.");
+		return false;
+	}
 	return true;
 }
 
 bool Quadrilateral::setC(const Point& pt) {
 	c.x = pt.x;
 	c.y = pt.y;
+	if (false == isValid()) {
+		throw invalid_argument("Hatali deger girdiniz.");
+		return false;
+	}
 	return true;
 }
 
 bool Quadrilateral::setD(const Point& pt) {
 	d.x = pt.x;
 	d.y = pt.y;
+	if (false == isValid()) {
+		throw invalid_argument("Hatali deger girdiniz.");
+		return false;
+	}
 	return true;
 }
 
@@ -261,7 +281,7 @@ void Quadrilateral::printInfo() const noexcept {
 	cout << a.x << "," << a.y << "," << "), (";					// Vakit bulabilirsem öyle olanlarý özel olarak yazdýrmak için bir þeyler yazabilirim
 	cout << b.x << "," << b.y << "," << "), (";
 	cout << c.x << "," << c.y << "," << "), (";
-	cout << d.x << "," << d.y << "," << ")\nPeripheral: ";
+	cout << d.x << "," << d.y << "," << ")\nPerimeter: ";		//Peripheral yazmýþsýnýz ama perimeter olmalý diye düþündüm
 	cout << getPerimeter() << "\nColor: ";
 	cout << getColorAsString() << endl;
 }

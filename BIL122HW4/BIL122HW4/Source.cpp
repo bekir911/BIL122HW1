@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-//#include "Triangle.h"
+#include "Triangle.h"
 #include "Quadrilateral.h"
 
 using namespace std;
@@ -33,59 +33,11 @@ using namespace std;
 //}
 
 
-template<class T>
-int sortByPerimeter(vector<T>& v)
-{
-	return 0;//DEÐÝÞTÝR
-}
-
-int main() {
-	// Point class test
-	auto p = Point{ 4.5, 6.2 };
-
-	cout << p.x << " " << p.y << endl;
-	cout << p.coords[0] << " " << p.coords[1] << endl;
-
-
-	try
-	{
-		auto invalidQuad1 = Quadrilateral{ Point{4, 0},  Point{9, 0},  Point{14, 0}, Point{0, 0} };
-	}
-	catch (invalid_argument& ex)
-	{
-		cout << "Invalid Quad: " << ex.what() << endl;
-	}
-
-
-
-
-	// Sample Quad and Triangle Objects
-	try {
-		auto sampleQuad = Quadrilateral{ Point(1, 6), Point(1, 7), Point(1, 1), Point(6, 2) };
-		cout << "Color of Sample Quad:" << sampleQuad.getColorAsString() << endl;
-		cout << "koseler: " << sampleQuad.getA().x << "," << sampleQuad.getA().y << " " << sampleQuad.getB().x << "," << sampleQuad.getB().y << " " << endl;
-		cout << "gecerli ise 1 olur:          " << sampleQuad.isValid() << endl;
-	}
-	catch (invalid_argument& ex)
-	{
-		cout << "Invalid Quad: " << ex.what() << endl;
-	}
-
-
-	/*auto sampleQuad = Quadrilateral{ Point(4, 5), 20, 20 };
-	cout << "Color of Sample Quad:" << sampleQuad.getColorAsString() << endl;
-	cout << "koseler: " << sampleQuad.getA().x << "," << sampleQuad.getA().y << " " << sampleQuad.getB().x << "," << sampleQuad.getB().y << " " << endl;
-	cout << sampleQuad.isValid() << endl;*/
-
-
-
-
-
-	return 0;
-}
-
-
-
+//template<class T>
+//int sortByPerimeter(vector<T>& v)
+//{
+//	return 0;//DEÐÝÞTÝR
+//}
 
 
 //int main()
@@ -211,3 +163,41 @@ int main() {
 //
 //	return 0;
 //}
+
+
+
+
+
+
+
+
+
+
+
+
+int main() {
+	// Sample Quad and Triangle Objects
+	try {
+		auto sampleQuad = Quadrilateral{ Point(1, 6), Point(1, 7), Point(1, 1), Point(6, 2) };
+		cout << "Color of Sample Quad:" << sampleQuad.getColorAsString() << endl;
+		cout << "koseler: " << sampleQuad.getA().x << "," << sampleQuad.getA().y << " " << sampleQuad.getB().x << "," << sampleQuad.getB().y << " " << endl;
+		cout << "gecerli ise 1 olur:          " << sampleQuad.isValid() << endl;
+	}
+	catch (invalid_argument& ex)
+	{
+		cout << "Invalid Quad: " << ex.what() << endl;
+	}
+
+	try {
+		auto sampleTriangle = Triangle{ Point(4, 5),  Point(2, 2),  Point(4, 9) };
+		cout << "Color of Sample Triangle:" << sampleTriangle.getColorAsString() << endl;
+		cout << "kose: " << sampleTriangle.getA().x << "," << sampleTriangle.getA().y << " " << sampleTriangle.getB().x << "," << sampleTriangle.getB().y << " " << sampleTriangle.getC().x << "," << sampleTriangle.getC().y << endl;
+		cout << "gecerli ise 1 olur:          " << sampleTriangle.isValid() << endl;
+	}
+	catch (invalid_argument& ex) {
+		cout << "Invalid Quad: " << ex.what() << endl;
+	}
+
+
+	return 0;
+}

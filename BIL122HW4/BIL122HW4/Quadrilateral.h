@@ -2,7 +2,7 @@
 #include <array>
 #include <string>
 #include <map>
-#include <iostream> //BEN EKLEDÝM 
+#include <iostream> //BEN EKLEDÝM PRÝNT ÝÇÝN
 #include "Point.h"
 
 
