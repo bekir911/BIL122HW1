@@ -21,7 +21,7 @@ void fillTriangles(vector<Triangle>& v, int numberOfItems = 100) {
 		Point p2 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
 		Point p3 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
 		try {
-			auto randomColor = motor(calis) % 6;
+			auto randomColor = motor(calis) % 6;	//RENK SAYISI
 			auto color = static_cast<Triangle::Color>(randomColor);
 			Triangle triangle(p1, p2, p3, color);
 			v.push_back(triangle);
@@ -43,7 +43,7 @@ void fillQuads(vector<Quadrilateral>& v, int numberOfItems = 100) {
 		Point p3 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
 		Point p4 = { static_cast<double>(motor(calis)), static_cast<double>(motor(calis)) };
 		try {
-			auto randomColor = motor(calis) % 6;
+			auto randomColor = motor(calis) % 5;	//RENK SAYISI
 			auto color = static_cast<Quadrilateral::Color>(randomColor);
 			Quadrilateral quadrilateral(p1, p2, p3, p4, color);
 			v.push_back(quadrilateral);
@@ -59,17 +59,22 @@ void fillQuads(vector<Quadrilateral>& v, int numberOfItems = 100) {
 ///* Verilen Triangle veya Rectangle vektörününde çevre uzunluðu ve renk deðeri eþleþen ilk elemanýn indeksini döndürür.
 //Eleman bulunamazsa -1 döndürülür.*/
 template<class T>
-int search(const vector<T>& v, const T& key){
-
-
+int search(const vector<T>& v, const T& key) {
+	/*auto perimeter = key.getPerimeter();
+	auto colorA = static_cast<typename T::Color>(key.getColor());
+	for (auto i{ 0 }; i < v.size(); ++i) {
+		auto colorB = static_cast<typename T::Color>(v[i].getColor());
+		if (v[i].getPerimeter() == perimeter && colorB == colorA) {
+			return i;
+		}
+	}*/
+	return -1;
 }
 
-
-//template<class T>
-//int sortByPerimeter(vector<T>& v)
-//{
-//
-//}
+template<class T>
+int sortByPerimeter(vector<T>& v) {
+	return 0;
+}
 
 //int main()
 //{
@@ -209,17 +214,17 @@ int main() {
 	}
 
 	try {
-		auto sampleTriangle = Triangle{ Point(29, 41),  Point(78, 63),  Point(78, 6) ,Triangle::Color::BLUE };
-		cout << "Color of Sample Triangle:" << sampleTriangle.getColorAsString() << endl;
-		cout << "kose: " << sampleTriangle.getA().x << "," << sampleTriangle.getA().y << " " << sampleTriangle.getB().x << "," << sampleTriangle.getB().y << " " << sampleTriangle.getC().x << "," << sampleTriangle.getC().y << endl;
-		cout << "gecerli ise 1 olur:          " << sampleTriangle.isValid() << endl;
+
 	}
 	catch (invalid_argument& ex) {
 		cout << "Invalid Quad: " << ex.what() << endl;
 	}
 
 
-
+	auto sampleTriangle = Triangle{ Point(29, 41),  Point(78, 63),  Point(50, 6) ,Triangle::Color::BLUE };
+	cout << "Color of Sample Triangle:" << sampleTriangle.getColorAsString() << endl;
+	cout << "kose: " << sampleTriangle.getA().x << "," << sampleTriangle.getA().y << " " << sampleTriangle.getB().x << "," << sampleTriangle.getB().y << " " << sampleTriangle.getC().x << "," << sampleTriangle.getC().y << endl;
+	cout << "gecerli ise 1 olur:          " << sampleTriangle.isValid() << endl;
 
 
 	auto vectorOfTriangles = vector<Triangle>{};
@@ -227,6 +232,18 @@ int main() {
 
 	auto vectorOfquads = vector<Quadrilateral>{};
 	fillQuads(vectorOfquads);
+
+	// Search sample objects in the corresponding vectors
+	cout << "Searching a triangle...\n" << endl;
+	cout << "merbaa" << endl;
+	sampleTriangle.printInfo();
+	cout << endl;
+
+	cout << "sort: " << endl;
+	//sortByPerimeter(vectorOfTriangles);
+	/*if (auto idx = search(vectorOfTriangles, sampleTriangle) >= 0)
+		cout << "A similar object is found at index-" << idx << endl;
+	else cout << "No similar object can be found" << endl;*/
 
 	return 0;
 }

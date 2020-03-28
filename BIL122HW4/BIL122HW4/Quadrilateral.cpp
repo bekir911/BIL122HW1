@@ -25,12 +25,12 @@ Quadrilateral::Quadrilateral(const Point& a, const Point& c, const Color& color)
 Quadrilateral::Quadrilateral(const Point& a, double width, double height, const Color& color) {
 	a.x = a.x;
 	a.y = a.y;
-	b.x= this->a.x + width;
-	b.y= this->a.y;
-	c.x= b.x;
-	c.y= b.y - height;
-	d.x= b.y;
-	d.y= this->a.x;
+	b.x = this->a.x + width;
+	b.y = this->a.y;
+	c.x = b.x;
+	c.y = b.y - height;
+	d.x = b.y;
+	d.y = this->a.x;
 	this->color = color;
 	if (false == isValid()) {
 		throw invalid_argument("Hatali deger girdiniz.");
@@ -235,8 +235,8 @@ bool Quadrilateral::isValid() const {
 	return true;
 }
 
-bool Quadrilateral::setA(const Point& pt) {		
-	a.x = pt.x;									
+bool Quadrilateral::setA(const Point& pt) {
+	a.x = pt.x;
 	a.y = pt.y;
 	if (false == isValid()) {
 		throw invalid_argument("Hatali deger girdiniz.");
@@ -277,11 +277,11 @@ bool Quadrilateral::setD(const Point& pt) {
 
 void Quadrilateral::printInfo() const noexcept {
 	cout << "Quadrilateral" << endl;
-	cout << "Number of points: 4\nPoints: (";					// Rectangle demiþsiniz ama hepsi öyle olmak zorunda deðil
-	cout << a.x << "," << a.y << "," << "), (";					// Vakit bulabilirsem öyle olanlarý özel olarak yazdýrmak için bir þeyler yazabilirim
-	cout << b.x << "," << b.y << "," << "), (";
-	cout << c.x << "," << c.y << "," << "), (";
-	cout << d.x << "," << d.y << "," << ")\nPerimeter: ";		//Peripheral yazmýþsýnýz ama perimeter olmalý diye düþündüm
+	cout << "Number of points: " << NUMBER_OF_CORNERS << "\nPoints: (";					// Rectangle demiþsiniz ama hepsi öyle olmak zorunda deðil
+	cout << a.x << ", " << a.y << "), (";					// Vakit bulabilirsem öyle olanlarý özel olarak yazdýrmak için bir þeyler yazabilirim
+	cout << b.x << ", " << b.y << "), (";
+	cout << c.x << ", " << c.y << "), (";
+	cout << d.x << ", " << d.y << ")\nPerimeter: ";		//Peripheral yazmýþsýnýz ama perimeter olmalý diye düþündüm
 	cout << getPerimeter() << "\nColor: ";
 	cout << getColorAsString() << endl;
 }

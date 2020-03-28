@@ -2,7 +2,7 @@
 
 const map<Triangle::Color, string> Triangle::colorToStringMap = { {Triangle::Color::PINK, "Pink"},
 {Triangle::Color::RED, "Red"},
-{Triangle::Color::BLUE, "Blue"},	
+{Triangle::Color::BLUE, "Blue"},
 {Triangle::Color::WHITE, "White"},
 {Triangle::Color::BLACK, "Black"},
 {Triangle::Color::GREEN, "Green"}
@@ -130,10 +130,10 @@ bool Triangle::isValid() const {
 
 void Triangle::printInfo() const noexcept {
 	cout << "Triangle" << endl;
-	cout << "Number of points: 3\nPoints: (";					
-	cout << a.x << "," << a.y << "," << "), (";					
-	cout << b.x << "," << b.y << "," << "), (";
-	cout << c.x << "," << c.y << "," << "), (\nPerimeter: ";
+	cout << "Number of points: " << NUMBER_OF_CORNERS << "\nPoints: (";
+	cout << a.x << ", " << a.y << "), (";
+	cout << b.x << ", " << b.y << "), (";
+	cout << c.x << ", " << c.y << ")\nPerimeter: ";
 	cout << getPerimeter() << "\nColor: ";
 	cout << getColorAsString() << endl;
 }
