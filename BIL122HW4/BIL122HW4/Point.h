@@ -1,6 +1,6 @@
 #pragma once
 #include <array>
-#include <cmath>	//BEN EKLEDÝM
+//#include <cmath>	//BEN EKLEDÝM
 
 // !!!!!!!!!!!!!!!! BU SAYFADA DUZENLEME YAPMAYINIZ !!!!!!!!!!!!!!!!
 

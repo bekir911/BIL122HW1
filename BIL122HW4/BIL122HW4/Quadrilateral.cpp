@@ -239,7 +239,7 @@ bool Quadrilateral::setA(const Point& pt) {
 	a.x = pt.x;
 	a.y = pt.y;
 	if (false == isValid()) {
-		throw invalid_argument("Hatali deger girdiniz.");
+		throw invalid_argument("Dortgenin A noktasi icin hatali deger girdiniz.");
 		return false;
 	}
 	return true;
@@ -249,7 +249,7 @@ bool Quadrilateral::setB(const Point& pt) {
 	b.x = pt.x;
 	b.y = pt.y;
 	if (false == isValid()) {
-		throw invalid_argument("Hatali deger girdiniz.");
+		throw invalid_argument("Dortgenin B noktasi icin hatali deger girdiniz.");
 		return false;
 	}
 	return true;
@@ -259,7 +259,7 @@ bool Quadrilateral::setC(const Point& pt) {
 	c.x = pt.x;
 	c.y = pt.y;
 	if (false == isValid()) {
-		throw invalid_argument("Hatali deger girdiniz.");
+		throw invalid_argument("Dortgenin C noktasi icin hatali deger girdiniz.");
 		return false;
 	}
 	return true;
@@ -269,7 +269,7 @@ bool Quadrilateral::setD(const Point& pt) {
 	d.x = pt.x;
 	d.y = pt.y;
 	if (false == isValid()) {
-		throw invalid_argument("Hatali deger girdiniz.");
+		throw invalid_argument("Dortgenin D noktasi icin hatali deger girdiniz.");
 		return false;
 	}
 	return true;

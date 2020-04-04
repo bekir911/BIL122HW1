@@ -68,9 +68,9 @@ string Triangle::getColorAsString() const noexcept {
 }
 
 double Triangle::getPerimeter() const noexcept {
-	auto perimeter = a.distanceTo(b);
+	double perimeter = a.distanceTo(b);
 	perimeter += b.distanceTo(c);
-	perimeter += c.distanceTo(a);
+	perimeter += a.distanceTo(c);
 	return perimeter;
 }
 
@@ -78,7 +78,7 @@ bool Triangle::setA(const Point& pt) {
 	a.x = pt.x;
 	a.y = pt.y;
 	if (false == isValid()) {
-		throw invalid_argument("Hatali deger girdiniz.");
+		throw invalid_argument("Ucgenin A noktasi icin hatali deger girdiniz.");
 		return false;
 	}
 	return true;
@@ -88,7 +88,7 @@ bool Triangle::setB(const Point& pt) {
 	b.x = pt.x;
 	b.y = pt.y;
 	if (false == isValid()) {
-		throw invalid_argument("Hatali deger girdiniz.");
+		throw invalid_argument("Ucgenin B noktasi icin hatali deger girdiniz.");
 		return false;
 	}
 	return true;
@@ -98,7 +98,7 @@ bool Triangle::setC(const Point& pt) {
 	c.x = pt.x;
 	c.y = pt.y;
 	if (false == isValid()) {
-		throw invalid_argument("Hatali deger girdiniz.");
+		throw invalid_argument("Ucgenin C noktasi icin hatali deger girdiniz.");
 		return false;
 	}
 	return true;

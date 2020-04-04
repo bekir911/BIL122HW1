@@ -1,9 +1,11 @@
 #include <iostream>
 #include <vector>
-#include <random>	//BEN EKLEDÝM
-#include <ctime>	//BEN EKLEDÝM. RANDOM ÝÇÝN GEREKLÝYDÝ
+#include <random>							//BEN EKLEDÝM
+#include <ctime>							//BEN EKLEDÝM. RANDOM ÝÇÝN GEREKLÝYDÝ
 #include "Triangle.h"
 #include "Quadrilateral.h"
+
+#include <iomanip>							//SÝL BUNU SONRA
 
 using namespace std;
 
@@ -25,6 +27,17 @@ void fillTriangles(vector<Triangle>& v, int numberOfItems = 100) {
 			auto color = static_cast<Triangle::Color>(randomColor);
 			Triangle triangle(p1, p2, p3, color);
 			v.push_back(triangle);
+
+			cout << "\ni: " << i << endl;
+
+			cout << "a.x " << v[i].getA().x << endl;
+			cout << "a.y " << v[i].getA().y << endl;
+			cout << "b.x " << v[i].getB().x << endl;
+			cout << "b.y " << v[i].getB().y << endl;
+			cout << "c.x " << v[i].getC().x << endl;
+			cout << "c.y " << v[i].getC().y << endl;
+
+			//v[i].printInfo();
 		}
 		catch (invalid_argument& ex) {
 			cout << "Invalid Triangle: " << ex.what() << endl;
@@ -58,21 +71,85 @@ void fillQuads(vector<Quadrilateral>& v, int numberOfItems = 100) {
 
 ///* Verilen Triangle veya Rectangle vektörününde çevre uzunluðu ve renk deðeri eþleþen ilk elemanýn indeksini döndürür.
 //Eleman bulunamazsa -1 döndürülür.*/
-template<class T>
-int search(const vector<T>& v, const T& key) {
-	/*auto perimeter = key.getPerimeter();
-	auto colorA = static_cast<typename T::Color>(key.getColor());
-	for (auto i{ 0 }; i < v.size(); ++i) {
-		auto colorB = static_cast<typename T::Color>(v[i].getColor());
-		if (v[i].getPerimeter() == perimeter && colorB == colorA) {
-			return i;
-		}
-	}*/
-	return -1;
-}
+//template<class T>
+//int search(const vector<T>& v, const T& key) {
+//	auto perimeter{ key.getPerimeter() };
+//	auto size{ v.size() };
+//	auto colorA = static_cast<typename T::Color>(key.getColor());
+//	for (size_t i{ 0 }; i < size; ++i) {
+//		auto colorB = static_cast<typename T::Color>(v[i].getColor());
+//		if (v[i].getPerimeter() == perimeter && colorB == colorA) {
+//			return i;
+//		}
+//	}
+//	return -1;
+//}
 
 template<class T>
 int sortByPerimeter(vector<T>& v) {
+	auto size{ v.size() };
+	auto kopya = vector<T>{};
+	auto bosluk = vector<T>{};
+	auto bosluk2 = vector<T>{};
+	auto bosluk3 = vector<T>{};
+
+	//copy(v.begin(), v.end(), back_inserter(kopya));
+
+	//for (const auto index : kopya) {
+
+	for (int i{ 0 }; i < v.size(); ++i) {
+
+
+		/*double a1 = kopya[i].getA().x;				DURUMA GÖRE YORUMA ALIP KALDIRABÝLÝRSÝNÝZ
+		cout << "geta.x: " << a1 << endl;
+		double a2 = kopya[i].getA().y;
+		cout << "geta.y: " << a2 << endl;
+		double b1 = kopya[i].getB().x;
+		cout << "getb.x: " << b1 << endl;
+		double b2 = kopya[i].getB().y;
+		cout << "getb.y: " << b2 << endl;
+		double c1 = kopya[i].getC().x;
+		cout << "getc.x: " << c1 << endl;
+		double c2 = kopya[i].getC().y;
+		cout << "getc.y: " << c2 << endl;*/
+
+		for (const auto index : v) {
+			cout << "\ngirdi i: " << i << endl;
+
+			double a1 = index.getA().x;
+			cout << "geta.x: " << a1 << endl;			//DURUMA GÖRE YORUMA ALIP KALDIRABÝLÝRSÝNÝZ
+			double a2 = index.getA().y;
+			cout << "geta.y: " << a2 << endl;
+			double b1 = index.getB().x;
+			cout << "getb.x: " << b1 << endl;
+			double b2 = index.getB().y;
+			cout << "getb.y: " << b2 << endl;
+			double c1 = index.getC().x;
+			cout << "getc.x: " << c1 << endl;
+			double c2 = index.getC().y;
+			cout << "getc.y: " << c2 << endl;
+
+			/*cout << index.getA().x << endl;
+			cout << index.getA().y << endl;
+			cout << index.getB().x << endl;
+			cout << index.getB().y << endl;
+			cout << index.getC().x << endl;
+			cout << index.getC().y << endl;*/
+		}
+	}
+
+	//for (size_t i{ 0 }; i < size - 2; ++i) {							BURASI ASIL KODUM. TABÝÝ YAPIM AÞAMASINDAYDI
+	//	for (size_t j{ 0 }; j < size - i - 2; ++j) {					HATA VERÝNCE HATAYI ÇÖZMEYE ÇALIÞIRKEN YORUMA ALDIM
+	//		cout << "3: " << endl;
+	//		cout << "v.size: " << v.size() << endl;
+	//		if (v[j].getPerimeter() < v[j + 1].getPerimeter()) {
+	//			T temp = v[j + 1];
+	//			v.erase(v.begin() + j + 1);
+	//			v.insert(v.begin() + j, temp);
+	//		}
+	//	}
+	//}
+
 	return 0;
 }
 
@@ -202,48 +279,70 @@ int sortByPerimeter(vector<T>& v) {
 
 int main() {
 	// Sample Quad and Triangle Objects
-	try {
-		auto sampleQuad = Quadrilateral{ Point(1, 6), Point(1, 7), Point(1, 1), Point(6, 2) };
-		cout << "Color of Sample Quad:" << sampleQuad.getColorAsString() << endl;
-		cout << "koseler: " << sampleQuad.getA().x << "," << sampleQuad.getA().y << " " << sampleQuad.getB().x << "," << sampleQuad.getB().y << " " << endl;
-		cout << "gecerli ise 1 olur:          " << sampleQuad.isValid() << endl;
-	}
-	catch (invalid_argument& ex)
-	{
-		cout << "Invalid Quad: " << ex.what() << endl;
-	}
-
-	try {
-
-	}
-	catch (invalid_argument& ex) {
-		cout << "Invalid Quad: " << ex.what() << endl;
-	}
-
 
 	auto sampleTriangle = Triangle{ Point(29, 41),  Point(78, 63),  Point(50, 6) ,Triangle::Color::BLUE };
-	cout << "Color of Sample Triangle:" << sampleTriangle.getColorAsString() << endl;
-	cout << "kose: " << sampleTriangle.getA().x << "," << sampleTriangle.getA().y << " " << sampleTriangle.getB().x << "," << sampleTriangle.getB().y << " " << sampleTriangle.getC().x << "," << sampleTriangle.getC().y << endl;
-	cout << "gecerli ise 1 olur:          " << sampleTriangle.isValid() << endl;
-
+	sampleTriangle.printInfo();
 
 	auto vectorOfTriangles = vector<Triangle>{};
 	fillTriangles(vectorOfTriangles);
 
-	auto vectorOfquads = vector<Quadrilateral>{};
-	fillQuads(vectorOfquads);
-
-	// Search sample objects in the corresponding vectors
-	cout << "Searching a triangle...\n" << endl;
-	cout << "merbaa" << endl;
-	sampleTriangle.printInfo();
-	cout << endl;
-
-	cout << "sort: " << endl;
-	//sortByPerimeter(vectorOfTriangles);
-	/*if (auto idx = search(vectorOfTriangles, sampleTriangle) >= 0)
-		cout << "A similar object is found at index-" << idx << endl;
-	else cout << "No similar object can be found" << endl;*/
+	sortByPerimeter(vectorOfTriangles);
 
 	return 0;
 }
+
+
+
+//SORTUN ÝÇÝ BUYDU
+
+//auto size{ v.size() };
+//
+//vector<T> kopya{};
+//copy(v.begin(), v.end(), back_inserter(kopya));
+//
+//cout << "1: " << endl;
+//
+//for (size_t i{ 0 }; i < size - 2; ++i) {
+//
+//	cout << "2: " << endl;
+//
+//	for (size_t j{ 0 }; j < size - i - 2; ++j) {
+//
+//		cout << "3: " << endl;
+//		cout << "v.size: " << v.size() << endl;
+//
+//
+//		cout << "deneme5: " << kopya[5].getPerimeter() << endl;
+//		double deneme5 = kopya.at(5).getPerimeter();
+//		cout << "deneme5: " << deneme5 << endl;
+//
+//		double deneme = v[5].getPerimeter();
+//
+//		double deneme2 = v[j + 1].getPerimeter();
+//
+//
+//		if (deneme < deneme2) {
+//
+//
+//
+//			/*if (v[j].getPerimeter() < v[j + 1].getPerimeter()) {*/
+//
+//			cout << "4: " << endl;
+//
+//			//T temp = v[j + 1];
+//			/*T temp = v.at(j + 1);
+//
+//			cout << "5: " << endl;
+//
+//			v.erase(v.begin() + j + 1);
+//
+//			cout << "6: " << endl;
+//
+//			v.insert(v.begin() + j, temp);
+//
+//			cout << "7: " << endl;*/
+//		}
+//		cout << "7: " << endl;
+//	}
+//}
+//return 0;
