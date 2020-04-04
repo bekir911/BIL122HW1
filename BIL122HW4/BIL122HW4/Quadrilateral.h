@@ -60,6 +60,7 @@ public:
 	bool setB(const Point& pt);
 	bool setC(const Point& pt);
 	bool setD(const Point& pt);
+	bool setColor(const Color& color);
 
 	void printInfo() const noexcept;	// Double olmasýna gerek yok diye void yaptým
 	// Ekrana þunu basar:

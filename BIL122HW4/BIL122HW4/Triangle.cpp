@@ -104,6 +104,11 @@ bool Triangle::setC(const Point& pt) {
 	return true;
 }
 
+bool Triangle::setColor(const Color& color){
+	this->color = color;	// el ile çaðýrýlma ihtimaline karþý isValid koymayý denemedim ama döngüde renkleri çaðýrýp kýyaslayamadým
+	return true;
+}
+
 bool Triangle::isValid() const {
 	if (a.x == b.x && a.x == c.x) {	// X deðerleri ayný ise
 		return false;

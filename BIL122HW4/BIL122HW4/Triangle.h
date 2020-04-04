@@ -37,6 +37,7 @@ public:
 	bool setA(const Point& pt);
 	bool setB(const Point& pt);
 	bool setC(const Point& pt);
+	bool setColor(const Color& color);
 
 	/* Ucgen olup olmadýðýný kontrol eder.
 	 * Bu fonksiyonun tüm yapýcýlar ve setter fonksiyonlar içinde doðrudan/dolaylý olarak çaðrýlmasý zorunludur.

@@ -23,17 +23,17 @@ Quadrilateral::Quadrilateral(const Point& a, const Point& c, const Color& color)
 }
 
 Quadrilateral::Quadrilateral(const Point& a, double width, double height, const Color& color) {
-	a.x = a.x;
-	a.y = a.y;
-	b.x = this->a.x + width;
-	b.y = this->a.y;
-	c.x = b.x;
-	c.y = b.y - height;
-	d.x = b.y;
-	d.y = this->a.x;
+	this->a.x = a.x;
+	this->a.y = a.y;
+	this->b.y = this->a.y;
+	this->b.x = this->a.x + width;
+	this->c.x = this->b.x;
+	this->c.y = this->a.y - height;
+	this->d.x = this->a.x;
+	this->d.y = this->c.y;
 	this->color = color;
 	if (false == isValid()) {
-		throw invalid_argument("Hatali deger girdiniz.");
+		throw invalid_argument("Hatali deger girdiniz.");	//	sampleQuad hata veriyor
 	}
 }
 
@@ -232,6 +232,9 @@ bool Quadrilateral::isValid() const {
 	else if (d.y == b.y && b.y == c.y) {	//BCD y'leri ayný ise
 		return false;
 	}
+	else if (d.x > c.x) {
+		return false;
+	}
 	return true;
 }
 
@@ -274,6 +277,12 @@ bool Quadrilateral::setD(const Point& pt) {
 	}
 	return true;
 }
+
+bool Quadrilateral::setColor(const Color& color) {
+	this->color = color;		// el ile çaðýrýlma ihtimaline karþý isValid koymayý denemedim ama döngüde renkleri çaðýrýp kýyaslayamadým
+	return true;
+}
+
 
 void Quadrilateral::printInfo() const noexcept {
 	cout << "Quadrilateral" << endl;
