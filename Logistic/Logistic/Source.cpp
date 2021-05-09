@@ -9,13 +9,29 @@
 #include <stdexcept>
 #include <stack>
 #include <queue>
+#include <cstdlib>
+
+#define PLATE_LENGTH					0x0008
+#define REMANING_PLATE_LENGHT			0x0006
+#define KAMYON_MIN_AGIRLIK				0x07D0
+#define KAMYON_MAX_AGIRLIK				0x2710
+#define KAMYON_DEFAULT_MIN_AGIRLIK		0x05DC
+#define KAMYON_DEFAULT_MAX_AGIRLIK		0x0BB8
+#define KAPALI_KASA_MIN_HACIM			0x000A
+#define KAPALI_KASA_MAX_HACIM			0x001E
+#define SOGUTMALI_KASA_MIN_SICAKLIK	   -0x0028
+#define SOGUTMALI_KASA_MAX_SICAKLIK	   -0x000A
+#define TIR_MIN_HACIM					0x001E
+#define TIR_MAX_HACIM					0x0028
+
+#define KAMYON							"Kamyon"
+#define ACIK_KASA_KAMYONET				"Acik Kasa Kamyonet"
+#define SOGUTMALI_KASA_KAMYONET			"Sogutmali Kasa Kamyonet"
+#define TIR								"Tir"
 
 using namespace std;
 
-//buraya integer'ý string yapan bi map koy
-//o map araç türü olsun. kýyaslama için int, yazdýrmak için mapten gelen string kullanýlýr
 map<int, string> yukTuruMap = { {1, "Kuru Yuk"}, {2, "Gida"}, {3, "Kimyasal"} };
-//kullanimi yukturlerimap[1]; þeklinde. bu bir string döndürüyor
 
 map<string, vector<char>> aracTuruMap = { {"Kamyon", {'K', 'a', 'm', 'y', 'o', 'n'}},
 	{"Acik Kasa Kamyonet", {'A', 'c', 'i', 'k', ' ', 'K', 'a', 's', 'a', ' ', 'K', 'a', 'm', 'y', 'o', 'n', 'e', 't'}},
@@ -23,10 +39,9 @@ map<string, vector<char>> aracTuruMap = { {"Kamyon", {'K', 'a', 'm', 'y', 'o', '
 	{"Sogutmali Kasa Kamyonet", {'S', 'o', 'g', 'u', 't', 'm', 'a', 'l', 'i', ' ', 'K', 'a', 's', 'a', ' ', 'K', 'a', 'm', 'y', 'o', 'n', 'e', 't'}},
 	{"Tir", {'T', 'i', 'r'}} };
 
-
 class Yuk {
 
-	//Yuk sýnýfý için == operatör tanýmý
+	// Yuk sinifi icin == operator tanimi
 	friend bool operator==(const Yuk& yukcuk, const Yuk& yuk) {
 
 		if (yukcuk.getYukAdi() == yuk.getYukAdi() &&
@@ -40,64 +55,62 @@ class Yuk {
 		return false;
 	}
 
-	//yük bilgisi için << operatör tanýmý
+	// Yuk bilgisi icin << operator tanimi
 	friend ostream& operator<<(ostream& out, const Yuk& yuk) {
 
-		ostringstream str;
-		str << "Yuk adi: " << yuk.getYukAdi() << endl;
-		str << "Yuk turu: " << yuk.getYukTuru() << endl;
-		str << "Yuk hacmi: " << yuk.getYukHacmi() << endl;
-		str << "Yuk agirligi: " << yuk.getYukAgirligi() << endl;
+		ostringstream ss;
+		ss << "Yuk adi: " << yuk.getYukAdi() << endl;
+		ss << "Yuk turu: " << yuk.getYukTuru() << endl;
+		ss << "Yuk hacmi: " << yuk.getYukHacmi() << endl;
+		ss << "Yuk agirligi: " << yuk.getYukAgirligi() << endl;
 
-		string print = str.str();
-		out << print;
+		out << ss.str();
 
 		return out;
 	}
 
 public:
 
-	//yük için hem default hem normal consturctor
-	//ileride vector gibi bir þey içinde çaðýrýrsam default olsun diye
+	// Yuk icin hem default hem normal constructor
 	Yuk(string ad = "koli", int hacim = 1, int agirlik = 1, int tur = 1) :
-		yukAdi(ad), yukHacmi(hacim), yukAgirligi(agirlik), yukTuru(tur) { }
+		yukAdi{ ad }, yukHacmi{ hacim }, yukAgirligi{ agirlik }, yukTuru{ tur } { }
 
-	//yük adý için getter fonksiyon
+	// Yuk adi icin getter metot
 	string getYukAdi() const {
 		return yukAdi;
 	}
 
-	//yük adý için setter fonksiyon
+	// Yuk adi icin setter metot
 	void setYukAdi(string& isim) {
 		yukAdi = isim;
 	}
 
-	//yük hacmi için getter fonksiyon
+	// Yuk hacmi icin getter metot
 	int getYukHacmi() const {
 		return yukHacmi;
 	}
 
-	//yük hacmi için setter fonksiyon
+	// Yuk hacmi icin setter metot
 	void setYukHacmi(int hacim) {
 		yukHacmi = hacim;
 	}
 
-	//yük aðýrlýðý için getter fonksiyon
+	// Yuk agirligi icin getter metot
 	int getYukAgirligi() const {
 		return yukAgirligi;
 	}
 
-	//yük aðýrlýðý için setter fonksiyon
+	// Yuk agirligi icin setter metot
 	void setYukAdi(int agirlik) {
 		yukAgirligi = agirlik;
 	}
 
-	//yük türü için getter fonksiyon
+	// Yuk turu icin getter metot
 	string getYukTuru() const {
 		return (yukTuruMap[yukTuru]);
 	}
 
-	//yük türü için setter fonksiyon
+	// Yuk turu icin setter metot
 	void setYukTuru(int tur) {
 		yukTuru = tur;
 	}
@@ -109,103 +122,95 @@ private:
 	int yukAgirligi;
 };
 
-
 class Plaka {
 public:
 
-	//hem default hem conversion constructor
+	// Hem default hem conversion constructor
 	Plaka(string plate = "34LG1780") {
 
-		//setter fonksiyon gerekli kontrolleri yapýyor
+		// Setter metot gerekli kontrolleri yapiyor
 		setPlaka(plate);
 	}
 
-	//plaka gerektiðinde bununla çaðýrýlacak
+	// Plaka icin getter metot
 	string getPlaka() const {
 		return (il + harf + sayi);
 	}
 
-	//plaka için setter fonksiyon
+	// Plaka icin setter metot
 	void setPlaka(string plate) {
 
-		//uzunlðu 8 mi diye bakýyor, deðilse exception fýrlatýyor
-		if (8 != plate.length()) {
+		// Uzunlugu 8 mi diye bakiyor, degilse exception firlatiyor
+		if (PLATE_LENGTH != plate.length()) {
 			throw invalid_argument("Plaka 8 karakterli olmali.");
 		}
 
-		//il kýsmýný ayýrýp atýyor
+		// Il kismini ayirip atama yapiyor
 		il = plate.substr(0, 2);
-		//kalan kýsým için deðiþken oluþturuyor
-		string tempStr{ plate.substr(2, plate.length()) };
-		//tempStr'deki harf uzunluðunu anlamak için dizi oluþturuyor
-		bool arr[6] = { 0, 0, 0, 0, 0, 0 };
+		// Kalan kisim icin degisken olusturuyor
+		string tempStr{ plate.substr(il.length(), plate.length()) };
+		// Kontrol icin string degiskeni
+		string testStr{ "" };
 
-		//tempStr'deki harflerin konumunu iþaretliyor
-		for (auto i{ 0 }; i < 6; ++i) {
-			if ((tempStr[i] <= 'z' && tempStr[i] >= 'a') || (tempStr[i] <= 'Z' && tempStr[i] >= 'A')) {
-				++arr[i];
-			}
+		// tempStr'deki harflerin konumunu isaretliyor
+		for (auto& i : tempStr) {
+			testStr += isalpha(i) ? "1" : "0";
 		}
 
-		//doðru karakterlerin harf olduðunu kontrol etmek için gerek deðiþken 
-		auto tempInt{ 1 };
-		//deðer toplamýný tutmak için deðiþken
-		auto sum{ 0 };
-		//harfli kýsmýn uzunluðunu tutmak için deðiþken
+		auto binaryVal{ stoi(testStr) };
+		binaryVal /= 100;
 		auto harfLen{ 0 };
 
-		//ikili sistemde deðerlerini topluyor. bu sayede her bir durum eþsiz bir deðer alacak
-		for (auto i{ 0 }; i < 6; ++i) {
-			sum += tempInt * arr[i];
-			tempInt *= 2;
-		}
-
-		//toplam 1 ise sadece ilki, 3 ise ilki ve ikincisi, 7 ise ilk üçü, 15 ise ilk 4'ü harfir
-		//diðer deðer durumlarý kurala uymayacaðý için exception fýrlatýyor
-		switch (sum) {
-		case 1:
+		// Toplam 1 ise ilki, 3 ise ilk ve ikinci, 7 ise ilk ucu, 15 ise ilk dordu harftir
+		// Diger durumlar kurala uymayacagi icin exception firlatiyor
+		switch (binaryVal) {
+		case 1000:
 			harfLen = 1;
 			break;
-		case 3:
+		case 1100:
 			harfLen = 2;
 			break;
-		case 7:
+		case 1110:
 			harfLen = 3;
 			break;
-		case 15:
+		case 1111:
 			harfLen = 4;
 			break;
 		default:
 			throw invalid_argument("Plaka harf uzunlugu 1-4 araliginda degil.");
 		}
 
-		//bulunan deðerleri veri üyelerinde kaydediyor
+		// Bulunan degerleri veri uyelerine kaydediyor
 		harf = plate.substr(2, harfLen);
 		sayi = plate.substr(2 + harfLen, plate.length() - 2 - harfLen);
 	}
 
-	//setter ve getter fonksiyonlar
-	//setterlarda kontrol yapma gereði duymadým
+	// Il icin getter metot
 	string getIl() const {
 		return il;
 	};
 
-	string getHarf() const {
-		return harf;
-	}
-
-	string getSayi() const {
-		return sayi;
-	}
-
+	// Il icin setter metot
 	void setIl(string& other) {
 		il = other;
 	};
 
+	// Harf icin getter metot
+	string getHarf() const {
+		return harf;
+	}
+
+	// Harf icin setter metot
 	void setHarf(string& other) {
 		harf = other;
 	}
 
+	// Sayi icin getter metot
+	string getSayi() const {
+		return sayi;
+	}
+
+	// Sayi icin setter metot
 	void setSayi(string& other) {
 		sayi = other;
 	}
@@ -217,57 +222,56 @@ private:
 	string plaka;
 };
 
-
 class Sofor {
 public:
 
-	//hem default hem conversion constructor
+	// Hem default hem conversion constructor
 	Sofor(string sofor = "Ahmet Karahan") {
 		setSofor(sofor);
 	}
 
-	//getter fonksiyon
+	// Sofor icin getter metot
 	string getSofor() const {
 		return soforAdi + soforSoyadi;
 	}
 
-	//sofor için setter fonksiyon
+	// Sofor icin setter metot
 	void setSofor(string& sofor) {
 
-		//bosluklarin indexini tutacak bir stack
-		//þoförlerin bir soyadý var diye düþündüm. iki ismi olabilir
+		// Bosluklarin indexini tutacak bir stack
+		// Soforlerin bir soyadi var diye dusundum. iki ismi olabilir
 		stack<int> bosluk;
 
-		//boþlularýn indexinin kaydedilmesi
+		// Boslularin indexinin kaydedilmesi
 		for (auto i{ 0 }; i < static_cast<int>(sofor.length()); ++i) {
 			if (' ' == sofor[i]) {
 				bosluk.push(i);
 			}
 		}
 
-		//boþluk ile ayrýlýp ad ve soyad olarak kaydedilmesi
+		// Bosluk ile ayrilip ad ve soyad olarak kaydedilmesi
 		soforAdi = sofor.substr(0, bosluk.top());
 		soforSoyadi = sofor.substr(bosluk.top(), sofor.length() - bosluk.top());
 	}
 
-	//setter fonksiyon
-	void setSoforAdi(string& isim) {
-		soforAdi = isim;
-	}
-
-	//setter fonksiyon
-	void setSoforSoyadi(string& soyisim) {
-		soforSoyadi = soyisim;
-	}
-
-	//getter fonksiyon
+	// Sofor adi icin getter metot
 	string getSoforAdi() const {
 		return soforAdi;
 	}
 
-	//getter fonksiyon
+	// Sofor adi icin setter metot
+	void setSoforAdi(string& isim) {
+		soforAdi = isim;
+	}
+
+	// Sofor soyadi icin getter metot
 	string getSoforSoyadi() const {
 		return soforSoyadi;
+	}
+
+	// Sofor soyadi icin setter metot
+	void setSoforSoyadi(string& soyisim) {
+		soforSoyadi = soyisim;
 	}
 
 private:
@@ -275,320 +279,288 @@ private:
 	string soforSoyadi;
 };
 
-
 class Arac {
 
-	//arac bilgisi için << operatör tanýmý
+	// Arac bilgisi icin << operator tanimi
 	friend ostream& operator<<(ostream& out, const Arac& arac) {
 
-		//string olarak alýp yazdýrýyor
+		// String olarak alip yazdiriyor
 		out << arac.toStr();
 
-		//ostream referansý döndürüyor 
+		// Ostream referansi donduruyor 
 		return out;
 	}
 
 public:
 
-	//constructor. kontroller olduðu için default deðerler koydum
-	//kontroller olduðu için initializer list kullanmadým
-	Arac(string aracTuruStr, list<Yuk> liste = {}, string plaka = "34LG1780", string driver = "Ahmet Karahan") {
+	// Constructor. Kontroller oldugu icin default degerler koydum
+	// Kontroller oldugu icin initializer list kullanmadim
+	Arac(string aracTuruStr,
+		list<Yuk> liste = {},
+		string plaka = "34LG1780",
+		string driver = "Ahmet Karahan") {
 
-		//setterlarý çaðýrýyor
+		// Setter metotlari cagiriyor
 		setYukListesi(liste);
 		aracTuru = aracTuruMap[aracTuruStr];
 		setPlaka(plaka);
 		setSofor(driver);
 	}
 
-	//abstract sýnýfýn destrcutor'ýnýn virtual olmasý daha mantýklý
+	// Abstract sinifin destrcutor'inin virtual olmasi daha mantikli
 	virtual ~Arac() = default;
 
-	//aractaki tüm yükleri tek tek basar
-	//<< operatörü tanýmlý olduðu için bu þekilde yazýlabiliyor
+	// Aractaki tum yukleri tek tek basar
+	// << operatoru tanimli oldugu icin bu sekilde yazilabiliyor
 	void printYukListesi() {
 
-		//döngü kullanarak her yükü yazdýrýyor
+		// Dongu kullanarak her yuku yazdiriyor
 		for (Yuk yukcuk : yukListesi) {
 			cout << yukcuk << endl;
 		}
 	}
 
-	//toplam aðýrlýðý döndüren fonkisyon
+	// Toplam agirligi donduren metot
 	int getAgirlik() const {
 
-		//toplam aðýrlýðý tutacak deðiþken
+		// Toplam agirligi tutacak degisken
 		auto sum{ 0 };
 
-		//tüm yüklerin aðýrlýklarýný deðiþkene ekliyor
+		// Tum yuklerin agirligini degiskene ekliyor
 		for (Yuk yukcuk : yukListesi) {
 			sum += yukcuk.getYukAgirligi();
 		}
 
-		//toplam deðeri döndürüyor
+		// Toplam degeri donduruyor
 		return sum;
 	}
 
-	//toplam hacmi döndüren fonksiyon
+	// Toplam hacmi donduren metot
 	int getHacim() const {
 
-		//toplam hacmi tutacak deðiþken
+		// Toplam hacmi tutacak degisken
 		auto sum{ 0 };
 
-		//tüm yüklerin hacimlerini deðiþkene ekliyor
+		// Tum yuklerin hacimlerini degiskene ekliyor
 		for (Yuk yukcuk : yukListesi) {
 			sum += yukcuk.getYukHacmi();
 		}
 
-		//toplam deðeri döndürüyor
+		// Toplam degeri donduruyor
 		return sum;
 	}
 
-	//araç türü için setter
+	// Arac turu icin setter metot
 	void setAracTuru(string aracTuruStr) {
 
-		//mapten alip ekliyor
+		// Map'ten alip ekliyor
 		aracTuru = aracTuruMap[aracTuruStr];
 	}
 
-	//araç türü için getter
+	// Arac turu icin getter metot
 	string getAracTuru() const {
 
-		//geçici string oluþturuyor
-		string temp;
+		// Gecici string olusturuyor
+		string temp{ "" };
 
-		//geçici stringe elemanlarý tek tek ekliyor
-		for (auto i{ 0 }; i < static_cast<int>(aracTuru.size()); ++i) {
-			temp += aracTuru[i];
+		// Gecici stringe elemanlari tek tek ekliyor
+		for (auto& i : aracTuru) {
+			temp += i;
 		}
 
-		//geçici stringi döndürüyor
+		// Gecici stringi donduruyor
 		return temp;
 	}
 
-	//plaka için setter fonksiyon
-	void setPlaka(string plaka) {
-		plate.setPlaka(plaka);
-	}
-
-	//plaka için getter fonksiyon
+	// Plaka icin getter metot
 	string getPlaka() const {
 		return plate.getPlaka();
 	}
 
-	//þoför ad-soyadý için setter fonksiyon
-	void setSofor(string sofor) {
-		sorumluSofor.setSofor(sofor);
+	// Plaka icin setter metot
+	void setPlaka(string plaka) {
+		plate.setPlaka(plaka);
 	}
 
-	//þoför ad-soyadý için getter fonksiyon
+	// Sofor ad-soyadi icin getter metot
 	string getSofor() const {
 		return sorumluSofor.getSofor();
 	}
 
-	//þoför adý için setter fonksiyon
-	void setSoforAdi(string isim) {
-		sorumluSofor.setSoforAdi(isim);
+	// Sofor ad-soyadi icin setter metot
+	void setSofor(string sofor) {
+		sorumluSofor.setSofor(sofor);
 	}
 
-	//þoför adý için getter fonksiyon
+	// Sofor adi icin getter metot
 	string getSoforAdi() const {
 		return sorumluSofor.getSoforAdi();
 	}
 
-	//þoför soyadý için setter fonksiyon
-	void setSoforSoyadi(string soyisim) {
-		sorumluSofor.setSoforSoyadi(soyisim);
+	// Sofor adi icin setter metot
+	void setSoforAdi(string isim) {
+		sorumluSofor.setSoforAdi(isim);
 	}
 
-	//þoför soyadý için getter fonksiyon
+	// Sofor soyadi icin getter metot
 	string getSoforSoyadi() const {
 		return sorumluSofor.getSoforSoyadi();
 	}
 
-	//yük listesi için getter fonksiyon
+	// Sofor soyadi icin setter metot
+	void setSoforSoyadi(string soyisim) {
+		sorumluSofor.setSoforSoyadi(soyisim);
+	}
+
+	// Yuk listesi icin getter metot
 	list<Yuk> getYukListesi() const {
 		return yukListesi;
 	}
 
-	//virtual << yapamadýðým için veriyi buradan alacaðým
-	virtual string toStr() const {
-
-		//stringstream oluþturup ekliyor
-		ostringstream str;
-		str << "Arac turu: " << this->getAracTuru() << endl;
-		str << "Plaka: " << this->getPlaka() << endl;
-		str << "Sofor adi: " << this->getSofor() << endl;
-		str << "Yuk sayisi: " << this->getYukListesi().size() << endl;
-
-		//string olarak döndürüyor
-		return str.str();
-	}
-
-
-	//yük listesi için setter fonksiyon
+	// Yuk listesi icin setter metot
 	virtual void setYukListesi(list<Yuk> liste) {
 		yukListesi = liste;
 	}
 
-	//yük ekleme fonksiyonu
+	//virtual << yapamadigim icin veriyi buradan aliyorum
+	virtual string toStr() const {
+
+		// Stringstream olusturup ekliyor
+		ostringstream ss;
+		ss << "Arac turu: " << this->getAracTuru() << endl;
+		ss << "Plaka: " << this->getPlaka() << endl;
+		ss << "Sofor adi: " << this->getSofor() << endl;
+		ss << "Yuk sayisi: " << this->getYukListesi().size() << endl;
+
+		// String olarak donduruyor
+		return ss.str();
+	}
+
+	// Yuk eklemek icin metot
 	virtual void yukEkle(const Yuk& yuk) {
 		yukListesi.push_back(yuk);
 	}
 
-	//yük adedini döndürüyor
+	// Yuk adedi icin getter metot
 	int getYukSayisi() {
 		return yukListesi.size();
 	}
 
-	//yük ekleme fonksiyonu
-	//hepsi için direkt ayný olacak bu yüzden virtual olmasýna gerek yok bence
+	// Yuk bosaltmak icin metot
 	void yukBosalt(const Yuk& yuk) {
 
-		//tüm yük listesini geziyor
+		// Tum yuk listesini geziyor
 		for (auto it1{ yukListesi.begin() }; it1 != yukListesi.end(); ++it1) {
 
-			//tüm özellikleri eþit ise
+			// Tum ozellikleri esit ise
 			if (it1->getYukAdi() == yuk.getYukAdi() &&
 				it1->getYukAgirligi() == yuk.getYukAgirligi() &&
 				it1->getYukHacmi() == yuk.getYukHacmi() &&
 				it1->getYukTuru() == yuk.getYukTuru()) {
 
-				//siliyor ve çýkýyor
-				//ayný nesneden tekrar varsa silmiyor
+				// Siliyor ve cikiyor
+				// Ayni nesneden tekrar varsa silmiyor
 				yukListesi.erase(it1);
 				break;
 			}
 		}
 	}
 
-	//parametre olarak int alan boþalt fonksiyonu
+	// Parametre olarak integer index alan bosalt metodu
 	void yukBosalt(const int index) {
 
-		//sayaç deðiþkeni
+		// Sayac degiskeni
 		auto counter{ 0 };
 
-		//iterator tanýmý
+		// Iterator tanimi
 		auto it1{ yukListesi.begin() };
 
-		//iterator istenen konuma getiriliyor
+		// Iterator istenen konuma getiriliyor
 		for (; counter < index; ++counter) {
 			++it1;
 		}
 
-		//o konumdaki yük siliniyor
+		// O konumdaki yuk siliniyor
 		yukListesi.erase(it1);
 	}
 
-	//+= operatörü aþýrýyüklemesi
+	// += operator overloading
 	virtual Arac& operator+=(const Yuk& yuk) {
 
-		//var olan fonksiyonu çaðýrýyor
+		// Var olan metodu cagiriyor
 		yukEkle(yuk);
 
-		//nesnenin referansýný döndürüyor
+		// Nesnenin referansini donduruyor
 		return *this;
 	}
 
-	//-= operatörü aþýrýyüklemesi
-	//yukbosaltin aynisi sadece referans döndürüyor
-	//virtual olmasýna gerek yok, hepsi için ayný
+	// -= operator overloading
+	// Yuk bosalt'in aynisi, sadece referans donduruyor
 	Arac& operator-=(const Yuk& yuk) {
-
-		//yukBosalt fonksiyonu o iþi yapýyor zaten
 		yukBosalt(yuk);
 
 		return *this;
 	}
 
-	//yük listesinin boþ olup olmadýðýný kontrol eder
-	//boþ ise true döndürür
-	//sýnýfýn soyut olmasýný saðlayan fonksyion
+	// Yuk listesinde olup olmadigini kontrol eder
+	// Bos ise true dondurur
+	// Sinifin soyut olmasini saglayan metot
 	virtual bool bosMu() = 0;
 
-	//yük listesini tamamen boþaltan fonksiyon
+	// Yuk listesini tamamen bosaltan metot
 	void tamamenBosalt() {
 		yukListesi.clear();
 	}
 
-	//bubble sort ile sýralýyor
-	//fonksyion pointer'ý alýyor neye göre sýralama seçileceðini belirtmek için
+	// Bubblesort kullanarak siralama yapiyor
+	// Fonksiyon pointer'i aliyor, neye gore siralama secilecegini belirtmek icin
 	void yukSirala(bool (*compare)(const list<Yuk>::iterator& yuk1, const list<Yuk>::iterator& yuk2)) {
-
 		for (auto i{ 0 }; i < static_cast<int>(yukListesi.size()) - 1; ++i) {
-
-			//list iterator'larý + ile artmadýðý için böyle tanýmladým
 			auto it1{ yukListesi.begin() };
 			auto it2{ it1 };
 			++it2;
 
-			//iterator ile verilere eriþtim
-			for (; it2 != yukListesi.end(); ++it1, ++it2) {
-
+			while (it2 != yukListesi.end()) {
 				if (compare(it1, it2)) {
 					swap(it1, it2);
 				}
+
+				++it1; ++it2;
 			}
 		}
 	}
 
-	//aðýrlýða göre küçükten büyüðe kontrol eden bir fonksiyon
+	// Agirligina gore buyukten kucuge kontrol eden metot
 	static bool agirligaGoreBK(const list<Yuk>::iterator& yuk1, const list<Yuk>::iterator& yuk2) {
-
-		//aðýrlýklarýný kýyaslýyor
-		if (yuk1->getYukAgirligi() < yuk2->getYukAgirligi()) {
-			return true;
-		}
-
-		return false;
+		return yuk1->getYukAgirligi() < yuk2->getYukAgirligi();
 	}
 
-	//hacmine göre küçükten büyüðe kontrol eden bir fonksiyon
+	// Hacmine gore kucukten buyuge kontrol eden metot
 	static bool hacmineGoreKB(const list<Yuk>::iterator& yuk1, const list<Yuk>::iterator& yuk2) {
-
-		if (yuk1->getYukHacmi() > yuk2->getYukHacmi()) {
-			return true;
-		}
-
-		return false;
+		return yuk1->getYukHacmi() > yuk2->getYukHacmi();
 	}
 
-	//yük adlarýna göre alfabetik kontrol eden bir fonksiyon
+	// Yuk adlarina gore alfabetin kontrol eden metot
 	static bool adinaGore(const list<Yuk>::iterator& yuk1, const list<Yuk>::iterator& yuk2) {
+		// Ufak olan boyutu buluyor
+		auto minSize{ min(yuk1->getYukAdi().size(), yuk2->getYukAdi().size()) };
 
-		//ufak olan boyutu buluyor
-		auto minSize{ 0 };
-		yuk1->getYukAdi().size() < yuk2->getYukAdi().size() ?
-			minSize = (*yuk1).getYukAdi().size() :
-			minSize = (*yuk2).getYukAdi().size();
-
-		//durum tutacak deðiþken
+		// Durum tutacak degisken
 		bool yuk1Buyuk{ false };
 
-		//ufak olanýn uzunluðuna kadar giden döngü
-		for (auto i{ 0 }; i < minSize; ++i) {
-			//harfleri büyütüyor
-			//bu sayede alfabetik sýralama yapýlabilecek
-			char char1{ static_cast<char>(toupper((*yuk1).getYukAdi()[i])) };
-			char char2{ static_cast<char>(toupper((*yuk2).getYukAdi()[i])) };
+		// Ufak olanin boyutuna kadar giden dongu
+		for (auto i{ 0 }; i < static_cast<int>(minSize); ++i) {
+			// Harfleri buyutuyor, bu sayede alfabetik siralama yapabilecek
+			char char1{ static_cast<char>(toupper(yuk1->getYukAdi()[i])) };
+			char char2{ static_cast<char>(toupper(yuk2->getYukAdi()[i])) };
 
 			if (char1 > char2) {
 				yuk1Buyuk = true;
 				break;
 			}
-
-			if (i == minSize) {
-				yuk1Buyuk = true;
-			}
 		}
 
 		return yuk1Buyuk;
-
-		/*if (yuk1Buyuk) {
-			return true;
-		}
-
-		return false;*/
 	}
 
 private:
@@ -597,7 +569,7 @@ private:
 	list<Yuk> yukListesi;
 	vector<char> aracTuru;
 
-	//swap için fonksiyon
+	// Swap icin metot
 	void swap(list<Yuk>::iterator& yuk1, list<Yuk>::iterator& yuk2) {
 		Yuk tempYuk = (*yuk1);
 		(*yuk1) = (*yuk2);
@@ -605,14 +577,13 @@ private:
 	}
 };
 
-
 class Kamyon :public Arac {
 
-	//kamyon sýnýfý için << operatör tanýmý
+	// Kamyon sinifi icin << operator tanimi
 	friend ostream& operator<<(ostream& out, const Kamyon& arac) {
 
-		//base class pointer ý ile onun operatörüne eriþiyor ve ekleme yapýyor
-		const Arac* temp = &arac;
+		// Base class pointer'i ile operatorune erisilip ekleme yapiyor
+		const Arac* temp{ &arac };
 
 		out << *temp;
 		out << "Agirlik: " << arac.getAgirlik() << endl;
@@ -622,111 +593,105 @@ class Kamyon :public Arac {
 
 public:
 
-	//consturctor. liste aðýrlýk sýnýrýna uyuyor mu diye kontrol ediyor
+	// Consturctor. Liste agirlik sinirina uyuyor mu diye kontrol ediyor
 	Kamyon(string aracTuruStr, list<Yuk>& liste, string plaka, string driver) :
-		Arac(aracTuruStr, liste, plaka, driver) {
+		Arac{ aracTuruStr, liste, plaka, driver } {
 
-		//kamyon ile açýk kasa kamyonet arasýndaki tek fark aðýrlýk olduðu için böyle yaptým
-		//sabit olsalar da const olarak verince veri üyesini deðiþtiremedim
-		//baþka veri üyesi eklemenin de pek bir anlamý yok bence
-		if ("Kamyon" == aracTuruStr) {
-			minAgirlik = 2000;
-			maxAgirlik = 10000;
+		// Kamyon ile acik kara kamyonet arasindaki fark agirlik oldugu icin bakiyor
+		if (KAMYON == aracTuruStr) {
+			minAgirlik = KAMYON_MIN_AGIRLIK;	// 2000 
+			maxAgirlik = KAMYON_MAX_AGIRLIK;	// 10000
 		}
 
-		//kontrolü fonksiyonda yapýyor
+		// Kontrolu metot ile yapiyor
 		this->setYukListesi(liste);
 	}
 
-	//abstract sýnýfýnki defaulttu
+	// Abstract sinifinki gibi default
 	virtual ~Kamyon() = default;
 
-	//to string fonksiyonu
+	// To string metodu
 	virtual string toStr() const override {
 
-		//ata sýnýftan aldýðýna kendi verilerini ekliyor
-		string temp = Arac::toStr();
+		// Ata siniftan aldigina kendi verilerini ekliyor
+		string temp{ Arac::toStr() };
 		temp += "Agirlik: ";
 		temp += to_string(this->getAgirlik());
 		temp += '\n';
-		return temp;
 
+		return temp;
 	}
 
-	//liste aðýrlýk sýnýrýna uyuyor mu diye kontrol ediyor
+	// Liste agirlik sinirina uyuyor mu diye kontrol ediyor
 	virtual void setYukListesi(list<Yuk> liste) override {
 
-		//toplam agirligi tutacak deðiþken
+		// Toplam agirligi tutacak degisken
 		auto sum{ 0 };
 
-		//toplam aðirliðin hesaplanmasi
-		for (Yuk yuk : liste) {
+		// Toplam agirligin hesaplanmasi
+		for (Yuk& yuk : liste) {
 			sum += yuk.getYukAgirligi();
 		}
 
-		//agirligin uygun aralikta olup olmadigi kontorol ediliyor
-		if (minAgirlik > sum || maxAgirlik < sum) {
+		// Agirligin uygun aralikta olup olmadigi kontorol ediliyor
+		if (sum < minAgirlik || sum > maxAgirlik) {
 			throw invalid_argument("Agirlik 2000-10000 kg arasi olmali.");
 		}
 
-		//uygun araliktaysa listeye ekliyor
+		// Uygun araliktaysa listeye ekliyor
 		this->Arac::setYukListesi(liste);
 	}
 
-	//eklenince oluþacak liste aðýrlýk sýnýrýna uyuyor mu diye kontrol ediyor
+	// Eklenince olusacak liste agirlik sinirina uyuyor mu diye kontrol ediyor
 	virtual void yukEkle(const Yuk& yuk) override {
 
-		//toplam agirligi tutacak deðiþken
+		// Toplam agirligi tutacak degisken
 		auto sum{ 0 };
 
-		//toplam aðirliðin hesaplanmasi
-		for (Yuk yukcuk : this->getYukListesi()) {
+		// Toplam agirligin hesaplanmasi
+		for (Yuk& yukcuk : this->getYukListesi()) {
 			sum += yukcuk.getYukAgirligi();
 		}
 
-		//son olarak yeni geleni ekliyor
+		// Son olarak yeni geleni ekliyor
 		sum += yuk.getYukAgirligi();
 
-		//agirligin uygun aralikta olup olmadigi kontorol ediliyor
-		if (minAgirlik > sum || maxAgirlik < sum) {
+		// Agirligin uygun aralikta olup olmadigi kontrol ediliyor
+		if (sum < minAgirlik || sum > maxAgirlik) {
 			throw invalid_argument("Agirlik 2000-10000 kg arasi olmali.");
 		}
 
-		//uygunsa yükü ekliyor
+		// Uygunsa yuku ekliyor
 		this->Arac::yukEkle(yuk);
 	}
 
-	//eklenince oluþacak liste aðýrlýk sýnýrýna uyuyor mu diye kontrol ediyor
+	// Kamyon yuk eklemek icin += operator tanimi
 	virtual Kamyon& operator+=(const Yuk& yuk) override {
 
-		//uygunsa yükü ekliyor
+		// Uygunsa yuku ekliyor
 		yukEkle(yuk);
 
 		return *this;
 	}
 
-	//boþ olup olmadýðýný kontrol ediyor
-	//pure virtual olduðu için hepsinde ayný þekilde tanýmlamam gerekti
-	//boþsa true döndürür
+	// Bos olup olmadigini kontrol ediyor
+	// Bossa true dondurur
 	virtual bool bosMu() override final {
 		return (0 == this->getYukListesi().size());
 	}
 
-
-
 private:
-	int minAgirlik{ 1500 };
-	int maxAgirlik{ 3000 };
+	int minAgirlik{ KAMYON_DEFAULT_MIN_AGIRLIK };
+	int maxAgirlik{ KAMYON_DEFAULT_MAX_AGIRLIK };
 };
-
 
 class AcikKasa :public Kamyon {
 
-	//açýk kasa kamyonet sýnýfý için << operatör tanýmý
+	// Acik kasa kamyonet sinifi icin << operator tanimi
 	friend ostream& operator<<(ostream& out, const AcikKasa& arac) {
 
-		//base class pointer ý ile onun operatörüne eriþiyor ve ekleme yapýyor
-		const Kamyon* temp = &arac;
+		// Base class pointer'i ile onun operatorune erisiliyor ve ekleme yapiyor
+		const Kamyon* temp{ &arac };
 
 		out << *temp;
 
@@ -735,25 +700,25 @@ class AcikKasa :public Kamyon {
 
 public:
 
-	//constructor. kontroller ata sýnýfta yapýlýyor
+	// Constructor. Kontroller ata sinifta yapiliyor
 	AcikKasa(string aracTuruStr, list<Yuk>& liste, string plaka, string driver) :
-		Kamyon(aracTuruStr, liste, plaka, driver) {	}
+		Kamyon{ aracTuruStr, liste, plaka, driver } {
+	}
 
-	//türetilmiþ sýnýf olduðu için
+	// Turetilmis sinif oldugu icin
 	virtual ~AcikKasa() = default;
 
 private:
 
 };
 
-
 class KapaliKasa :public Kamyon {
 
-	//Kapali Kasa Kamyonet sýnýfý için << operatör tanýmý
+	// Kapali kasa kamyonet sinifi icin << operator tanimi
 	friend ostream& operator<<(ostream& out, const KapaliKasa& arac) {
 
-		//base class pointer ý ile onun operatörüne eriþiyor ve ekleme yapýyor
-		const Kamyon* temp = &arac;
+		// Base class pointer'i ile onun operatorune erisiliyor ve ekleme yapiyor
+		const Kamyon* temp{ &arac };
 
 		out << *temp;
 		out << "Toplam hacim: " << arac.getHacim() << endl;
@@ -761,98 +726,96 @@ class KapaliKasa :public Kamyon {
 		return out;
 	}
 
-
 public:
 
-	//consturctor. listeyi kontrol ediyor
+	// Consturctor. Listeyi kontrol ediyor
 	KapaliKasa(string aracTuruStr, list<Yuk>& liste, string plaka, string driver) :
-		Kamyon(aracTuruStr, liste, plaka, driver) {
+		Kamyon{ aracTuruStr, liste, plaka, driver } {
 
-		//uygun araliktaysa listeye ekliyor
-		//degilse boþ liste oluþturuluyor constructorda
+		// Yygun araliktaysa listeye ekliyor
+		// Degilse bos liste olusturuluyor constructorda
 		this->setYukListesi(liste);
 	}
 
-	//default olsun diye
+	// Turetilmis sinif oldugu icin
 	virtual ~KapaliKasa() = default;
 
-	//kapalý kasa için to string fonksiyonu
+	// Kapali kasa icin to string metodu
 	virtual string toStr() const override {
 
-		//ata sýnýftan aldýðýna ekleme yapýyor
-		string temp = Kamyon::toStr();
+		// Ata siniftan aldigina ekleme yapiyor
+		string temp{ Kamyon::toStr() };
 		temp += "Toplam hacim: ";
 		temp += to_string(this->getHacim());
 		temp += '\n';
+
 		return temp;
 	}
 
-	//kontrol edip listeyi atýyor
+	// Kontrol edip listeyi atiyor
 	virtual void setYukListesi(list<Yuk> liste) override {
 
-		//toplam hacmi tutacak deðiþken
+		// Toplam hacmi tutacak degisken
 		auto sum{ 0 };
 
-		//toplam hacmin hesaplanmasi
-		for (Yuk yuk : liste) {
+		// Toplam hacmin hesaplanmasi
+		for (Yuk& yuk : liste) {
 			sum += yuk.getYukHacmi();
 		}
 
-		//hacmin uygun aralikta olup olmadigi kontorol ediliyor
-		if (MIN_HACIM > sum || MAX_HACIM < sum) {
+		// Hacmin uygun aralikta olup olmadigi kontorol ediliyor
+		if (sum < MIN_HACIM || sum > MAX_HACIM) {
 			throw invalid_argument("Hacim 10-30 araliginda degil");
 		}
 
-		//uygun deðerlerdeyse listeye ekliyor
+		// Uygun degerlerdeyse listeye ekliyor
 		this->Kamyon::setYukListesi(liste);
 	}
 
-	//kontrol edip ekliyor
+	// Gelen yuku kontrol edip ekliyor
 	virtual void yukEkle(const Yuk& yuk) override {
 
-		//toplam hacim deðerini tutacak deðiþken
+		// Toplam hacmi tutacak degisken
 		auto sum{ 0 };
 
-		//toplam hacmin hesaplanmasi
-		for (Yuk yukcuk : this->getYukListesi()) {
+		// Toplam hacmin hesaplanmasi
+		for (Yuk& yukcuk : this->getYukListesi()) {
 			sum += yukcuk.getYukHacmi();
 		}
 
-		//son olarak yeni geleni ekliyor
+		// Son olarak yeni geleni ekliyor
 		sum += yuk.getYukHacmi();
 
-		//hacmin uygun aralikta olup olmadigi kontorol ediliyor
-		if (MIN_HACIM > sum || MAX_HACIM < sum) {
+		// Hacmin uygun aralikta olup olmadigi kontorol ediliyor
+		if (sum < MIN_HACIM || sum > MAX_HACIM) {
 			throw invalid_argument("Hacim 10-30 m'3 arasi olmali.");
 		}
 
-		//uygunsa yükü ekliyor
+		// Uygunsa yuku ekliyor
 		this->Kamyon::yukEkle(yuk);
 	}
 
-	//kontrol edip ekliyor ve nesneyi döndürüyor
+	// Kapali kasa icin += operator tanimi
 	virtual KapaliKasa& operator+=(const Yuk& yuk) override {
 
-		//uygunsa ekliyor
+		// Uygunsa ekliyor
 		yukEkle(yuk);
 
-		//nesneyi döndürüyor
 		return *this;
 	}
 
 private:
-	const int MIN_HACIM{ 10 };
-	const int MAX_HACIM{ 30 };
+	const int MIN_HACIM{ KAPALI_KASA_MIN_HACIM };
+	const int MAX_HACIM{ KAPALI_KASA_MAX_HACIM };
 };
-
 
 class SogutmaliKasa :public KapaliKasa {
 
-	//soðutmali kasa kamyonet sýnýfý için << operatör tanýmý
+	// Sogutmali kasa kamyonet sinifi icin << operator tanimi
 	friend ostream& operator<<(ostream& out, const SogutmaliKasa& arac) {
 
-		//base class pointer ý ile onun operatörüne eriþiyor ve ekleme yapýyor
-		const KapaliKasa* temp = &arac;
+		// Base class pointer'i ile onun operatorune erisiyor ve ekleme yapiyor
+		const KapaliKasa* temp{ &arac };
 
 		out << *temp;
 		out << "Kamyonet sicakligi: " << arac.getKasaSicakligi() << endl;
@@ -860,79 +823,75 @@ class SogutmaliKasa :public KapaliKasa {
 		return out;
 	}
 
-
 public:
-	//consturctor. listeyi kontrol ediyor
-	SogutmaliKasa(string aracTuruStr, list<Yuk>& liste, string plaka, string driver, int sicaklik) :
-		KapaliKasa(aracTuruStr, liste, plaka, driver), kasaSicakligi(sicaklik) {
 
-		//uygun araliktaysa listeye ekliyor
-		//degilse boþ liste oluþturuluyor constructorda
+	// Consturctor. Listeyi kontrol ediyor
+	SogutmaliKasa(string aracTuruStr, list<Yuk>& liste, string plaka, string driver, int sicaklik) :
+		KapaliKasa{ aracTuruStr, liste, plaka, driver },
+		kasaSicakligi{ sicaklik } {
+
+		// Uygun araliktaysa listeye ekliyor
+		// Degilse bos liste olusturuluyor constructorda
 		this->setYukListesi(liste);
 	}
 
-	//türetilmiþ sýnýf olduðu için
+	// Turetilmis sinif oldugu icin
 	virtual ~SogutmaliKasa() = default;
 
-	//soðutmali kasa için to string fonksiyonu
+	// Sogutmali kasa icin to string metodu
 	virtual string toStr() const override {
 
-		//temp string oluþturup ata sýnýftan aldýðýna ek yapýyor
-		string temp = KapaliKasa::toStr();
+		// Temp string olusturup ata siniftan aldigina ek yapiyor
+		string temp{ KapaliKasa::toStr() };
 		temp += "Kamyonet sicakligi: ";
 		temp += to_string(this->getKasaSicakligi());
 		temp += '\n';
 		return temp;
 	}
 
-	//sýcaklýk kontrolü ile listeyi atýyor
+	// Sicaklik kontrolu ile listeye atiyor
 	virtual void setYukListesi(list<Yuk> liste) override {
 
-		//sýcaklýk kontrolü yapýyor
-		if (MAX_SICAKLIK < kasaSicakligi || MIN_SICAKLIK > kasaSicakligi) {
+		// Sicaklik kontrolu yapiyor
+		if (kasaSicakligi > MAX_SICAKLIK || kasaSicakligi < MIN_SICAKLIK) {
 			throw invalid_argument("Sicaklik degeri uygun aralikta degil.");
 		}
 
-		//uygunsa listeyi atýyor
+		// Uygunsa listeyi atiyor
 		KapaliKasa::setYukListesi(liste);
 	}
 
-	//kasa sicakligi için setter
-	void setKasaSicakligi(int sicaklik) {
-
-		//sicaklik kontrolü yapýyor
-		//kasa içi boþssa yüklere bir þey olmayacaðý için sorun yok
-		if (!(this->bosMu()) && (MAX_SICAKLIK < sicaklik || MIN_SICAKLIK > sicaklik)) {
-			throw invalid_argument("Girilen sicaklik degeri uygun aralikta degil.");
-		}
-
-		//uygun ise atýyor
-		kasaSicakligi = sicaklik;
-	}
-
-
-	//kasa sicakligi için getter fonksiyon
+	// Kasa sicakligi icin getter metot
 	int getKasaSicakligi() const {
 		return kasaSicakligi;
 	}
 
-	//yük ekleme, çýkarma gibi iþlerin sýcaklýk ile alakasý yok
-	//kasanýn sýcaklýðýna baðlý, yüke deðil
+	// Kasa sicakligi icin setter metot
+	void setKasaSicakligi(int sicaklik) {
+
+		// Sicaklik kontrolu yapiyor
+		// Kasa ici bossa yuklere bir sey olmayacagi icin sorun yok
+		if (!(this->bosMu()) && (MAX_SICAKLIK < sicaklik || MIN_SICAKLIK > sicaklik)) {
+			throw invalid_argument("Girilen sicaklik degeri uygun aralikta degil.");
+		}
+
+		// Uygun ise atiyor
+		kasaSicakligi = sicaklik;
+	}
 
 private:
 	int kasaSicakligi;
-	const int MAX_SICAKLIK{ -10 };
-	const int MIN_SICAKLIK{ -40 };
+	const int MIN_SICAKLIK{ SOGUTMALI_KASA_MIN_SICAKLIK };
+	const int MAX_SICAKLIK{ SOGUTMALI_KASA_MAX_SICAKLIK };
 };
-
 
 class Tir :public Arac {
 
-	//tir sýnýfý için << operatör tanýmý
+	// Tir sinifi icin << operator tanimi
 	friend ostream& operator<<(ostream& out, const Tir& arac) {
 
-		//base class pointer ý ile onun operatörüne eriþiyor ve ekleme yapýyor
-		const Arac* temp = &arac;
+		// Base class pointer'i ile onun operatorune erisiyor ve ekleme yapiyor
+		const Arac* temp{ &arac };
 
 		out << *temp;
 		out << "Toplam agirik: " << arac.getAgirlik() << endl;
@@ -944,141 +903,143 @@ class Tir :public Arac {
 
 public:
 
-	//constructor. dorse kodu için yer aliyor
+	// Constructor. Dorse kodu icin yer aliyor
 	Tir(const char* oDorse, string aracTuruStr, list<Yuk>& liste, string plaka, string driver) :
-		Arac(aracTuruStr, liste, plaka, driver) {
+		Arac{ aracTuruStr, liste, plaka, driver } {
 
-		//uzunluðu tespit etme ve o uzunlukta yer alma
+		// Uzunlugu tespit etme ve o uzunlukta yer alma
 		dorseLen = strlen(oDorse);
 		dorse = new char[dorseLen];
 
-		//yer alýrken hata oluþursa hata fýrlatýyor
+		// Yer alirken hata olusursa exception firlatiyor
 		if (nullptr == dorse) {
 			throw ("Yer alinirken hata olustu.");
 		}
 
-		//alýnan yere veriyi kopyalýyor
+		// Alinnan yere veriyi kopyaliyor
 		memcpy(dorse, oDorse, dorseLen);
 
-		//listeyi atýyor. hata olursa içeride olacak
+		// Listeyi atiyor. Hata olursa iceride olacak
 		setYukListesi(liste);
 	}
 
-	//virtual destructor
+	// Virtual destructor
 	virtual ~Tir() {
 
-		//pointer dolu mu diye bakýyor, dolu ise boþaltýyor
+		// Pointer dolu mu diye bakiyor, dolu ise bosaltiyor
 		if (dorse) {
 			delete[] dorse;
 		}
 
-		//boþalttýðý yere nullptr atýyor
+		// Bosalttigi yer nullptr atiyor
 		dorse = nullptr;
 	}
 
-	//copy constructor
+	// Copy constructor
 	Tir(const Tir& o) :
-		Arac(o.getAracTuru(), o.getYukListesi(), o.getPlaka()), dorseLen(o.dorseLen) {
+		Arac{ o.getAracTuru(), o.getYukListesi(), o.getPlaka() },
+		dorseLen{ o.dorseLen } {
 
-		//yer aliyor
+		// Yer aliyor
 		dorse = new char[dorseLen];
 
-		//aldýðý yer alýnabilmiþ mi diye bakýyor
+		// Aldigi yer alinabilmis mi diye bakiyor
 		if (nullptr == dorse) {
 			throw ("Yer alinirken hata olustu.");
 		}
 
-		//aldýðý yere veriyi atýyor
+		// Aldigi yere veriyi atiyor
 		memcpy(dorse, o.dorse, dorseLen);
 
-		//diðer veri üyelerini kopyalýyor
+		// Diger veri uyelerini kopyaliyor
 		this->setAracTuru(o.getAracTuru());
 		this->setPlaka(o.getPlaka());
 		this->setSofor(o.getSofor());
 		this->setYukListesi(o.getYukListesi());
 	}
 
-	//move constructor
+	// Move constructor
 	Tir(Tir&& o) noexcept :
-		Arac(o.getAracTuru(), o.getYukListesi(), o.getPlaka()), dorseLen(o.dorseLen), dorse(o.dorse) {
+		Arac{ o.getAracTuru(), o.getYukListesi(), o.getPlaka() },
+		dorseLen{ o.dorseLen },
+		dorse{ o.dorse } {
 
-		//eskisini sýfýrlýyor
+		// Eskisini sifirliyor
 		o.dorse = nullptr;
 		o.dorseLen = 0;
 
-		//diðer veri üyelerini kopyalýyor
+		// Diger veri uyelerini kopyaliyor
 		this->setAracTuru(o.getAracTuru());
 		this->setPlaka(o.getPlaka());
 		this->setSofor(o.getSofor());
 		this->setYukListesi(o.getYukListesi());
 	}
 
-	//copy assignment operator
+	// Copy assignment operator
 	Tir& operator=(const Tir& o) {
 
-		//self assignment kontrolü yapýyor
+		// Self assignment kontrolu yapiyor
 		if (this != &o) {
 
-			//yer alýnmýþsa býrakýyor
+			// Yer alinmissa birakiyor
 			if (dorse) {
 				delete[] dorse;
 			}
 
-			//boyutunu kopyalýyor o boyutta yer alýyor
+			// Boyutunu kopyaliyor o boyutta yer aliyor
 			dorseLen = o.dorseLen;
 			dorse = new char[dorseLen];
 
-			//aldýðý yeri alabilmiþ mi diye bakýyor
-			if (dorse == nullptr) {
+			// Aldigi yeri alabilmis mi diye bakiyor
+			if (nullptr == dorse) {
 				throw ("Yer alinirken hata olustu.");
 			}
 
-			//aldýðý yere veriyi atýyor
+			// Aldigi yere veriyi atiyor
 			memcpy(dorse, o.dorse, dorseLen);
 
-			//diðer veri üyelerini kopyalýyor
+			// Diger veri uyelerini kopyaliyor
 			this->setAracTuru(o.getAracTuru());
 			this->setPlaka(o.getPlaka());
 			this->setSofor(o.getSofor());
 			this->setYukListesi(o.getYukListesi());
 		}
 
-		//kendini döndürüyor
 		return *this;
 	}
 
-	//move assignment operator
+	// Move assignment operator
 	Tir& operator=(Tir&& o) noexcept {
 
-		//self assignment kontrlü
+		// Self assignment kontrolu
 		if (this != &o) {
 
-			//daha önce yer alýnmýþ mý diye bakýyor
+			// Daha once yer alinmis mi diye bakiyor
 			if (dorse) {
 				delete[] dorse;
 			}
 
-			//verileri kopyalýyor
+			// Verileri kopyaliyor
 			dorseLen = o.dorseLen;
 			dorse = o.dorse;
 
-			//eski verileri sýfýrlýyor
+			// Eski verileri sifirliyor
 			o.dorseLen = 0;
 			o.dorse = nullptr;
 
-			//diðer veri üyelerini kopyalýyor
+			// Diger veri uyelerini kopyaliyor
 			this->setAracTuru(o.getAracTuru());
 			this->setPlaka(o.getPlaka());
 			this->setSofor(o.getSofor());
 			this->setYukListesi(o.getYukListesi());
 		}
 
-		//nesneyi döndürüyor
 		return *this;
 	}
 
+	// Tir icin to string metodu
 	virtual string toStr() const override {
-		string temp = Arac::toStr();
+		string temp{ Arac::toStr() };
 		temp += "Agirlik: ";
 		temp += to_string(this->getAgirlik());
 		temp += '\n';
@@ -1091,70 +1052,71 @@ public:
 		return temp;
 	}
 
-	//hacmi kontrol edip uygunsa ekliyor
+	// Hacmi kontrol edip uygunsa ekliyor
 	virtual void setYukListesi(list<Yuk> liste) override {
 
-		//toplam hacim deðerini tutacak deðiþken
+		// Toplam hacim degerini tutacak degisken
 		auto sum{ 0 };
 
-		//toplam hacim deðerinin hesaplanmasý
-		for (Yuk yuk : liste) {
+		// Toplam hacim degerinin hesaplanmasi
+		for (Yuk& yuk : liste) {
 			sum += yuk.getYukHacmi();
 		}
 
-		//uygun aralýkta deðilse exception fýrlatýyor
-		if (MAX_HACIM<sum || MIN_HACIM>sum) {
+		// Uygun aralikta degilse exception firlatiyor
+		if (sum > MAX_HACIM || sum < MIN_HACIM) {
 			throw invalid_argument("Hacim uygun aralikta degil.");
 		}
 
-		//uygun aralýkta ise ekliyor
+		// Uygun aralikta ise ekliyor
 		this->Arac::setYukListesi(liste);
 	}
 
-	//kontrol edip yük ekleyen fonksiyon
+	// Gelen yuku kontrol edip ekleyen metot
 	virtual void yukEkle(const Yuk& yukcuk) override {
 
-		//toplam hacim deðerini tutacak deðiþken
+		// Toplam hacim degerini tutacak degisken
 		auto sum{ 0 };
 
-		//toplam hacim deðerinin hesaplanmasý
-		for (Yuk yuk : this->getYukListesi()) {
+		// Toplam hacim degerinin hesaplanmasi
+		for (Yuk& yuk : this->getYukListesi()) {
 			sum += yuk.getYukHacmi();
 		}
 
-		//son olarak yeni geleni ekliyor
+		// Son olarak yeni geleni ekliyor
 		sum += yukcuk.getYukHacmi();
 
-		//uygun aralýkta deðilse exception fýrlatýyor
-		if (MAX_HACIM<sum || MIN_HACIM>sum) {
+		// Uygun aralikta degilse exception firlatiyor
+		if (sum > MAX_HACIM || sum < MIN_HACIM) {
 			throw invalid_argument("Hacim uygun aralikta degil.");
 		}
 
-		//uygun aralýkta ise ekliyor
+		// Uygun aralikta ise ekliyor
 		this->Arac::yukEkle(yukcuk);
 	}
 
-	//kontrol edip yük ekleyen operatör
+	// Tir sinifi icin += operator tanimi
 	virtual Tir& operator+=(const Yuk& yuk) override {
 
-		//uygunsa ekliyor
+		// Uygunsa ekliyor
 		yukEkle(yuk);
 
 		return *this;
 	}
 
-	//boþ olup olmadýðýný kontrol eder
+	// Bos olup olmadigini kontrol eder
+	// Bos ise true dondurur
 	virtual bool bosMu() override final {
 		return (0 == this->getYukListesi().size());
 	}
 
-	//dorse için getter
+	// Dorse icin getter metot
 	string getDorse() const {
 
-		//temp string oluþturuyor
-		string temp;
+		// Temp string olusturuyor
+		string temp{ "" };
 
-		//temp'e char olarak sýrayla atýyor ve döndürüyor 
+		// Temp'e char olarak sirayla atiyor ve donduruyor 
 		for (auto i{ 0 }; i < dorseLen; ++i) {
 			temp += dorse[i];
 		}
@@ -1162,60 +1124,59 @@ public:
 		return temp;
 	}
 
-	//dorse için setter fonksiyon
+	// Dorse icin setter metot
 	void setDorse(char* text) {
 
-		//verisi varsa siliyor
+		// Verisi varsa siliyor
 		if (dorse) {
 			delete[] dorse;
 		}
 
-		//boyutunu alýp ona göre yer alýyor
+		// Boyutunu alip ona gore yer aliyor
 		dorseLen = strlen(text);
 		dorse = new char[dorseLen];
 
-		//aldýðý yer alýnabilmiþ mi diye bakýyor
+		// Aldigi yer alinabilmis mi diye bakiyor
 		if (nullptr == dorse) {
 			throw ("Yer alinirken hata olustu.");
 		}
 
-		//aldýðý yere veriyi atýyor
+		// Aldigi yere veriyi atiyor
 		memcpy(dorse, text, dorseLen);
 	}
 
-	//dorse için parametre olarak const char pointer'ý alan fonksiyon
+	// Dorse icin parametre olarak const char pointer'i alan metot
 	void setDorse(const char* text) {
 
-		//verisi varsa siliyor
+		// Verisi varsa siliyor
 		if (dorse) {
 			delete[] dorse;
 		}
 
-		//boyutunu alýp ona göre yer alýyor
+		// Boyutunu alip ona gore yer aliyor
 		dorseLen = strlen(text);
 		dorse = new char[dorseLen];
 
-		//aldýðý yer alýnabilmiþ mi diye bakýyor
+		// Aldigi yer alinabilmis mi diye bakiyor
 		if (nullptr == dorse) {
 			throw ("Yer alinirken hata olustu.");
 		}
 
-		//aldýðý yere veriyi atýyor
+		// Aldigi yere veriyi atiyor
 		memcpy(dorse, text, dorseLen);
 	}
 
 private:
-	const int MAX_HACIM{ 40 };
-	const int MIN_HACIM{ 30 };
+	const int MIN_HACIM{ TIR_MIN_HACIM };
+	const int MAX_HACIM{ TIR_MAX_HACIM };
 	char* dorse;
 	int dorseLen;
 };
 
-
 int main() {
 
-	//ad hacim aðýrlýk tür
-	//yüklerin tanýmý
+	// Ad hacim agirlik tur
+	// Yuklerin tanimi
 	Yuk y1{ "elma yuk1", 10, 750, 2 };
 	Yuk y2{ "armut yuk2", 15, 500, 3 };
 	Yuk y3{ "kiraz yuk3", 10, 500, 1 };
@@ -1224,146 +1185,143 @@ int main() {
 	Yuk y6{ "araba yuk6", 3, 1000, 3 };
 	Yuk y7{ "karpuz yuk7", 1, 500, 2 };
 
-	//listeler tanýmý
+	// Listeler tanimi
 	list<Yuk> list1{ y1, y2, y3, y4, y5 };
 	list<Yuk> list2{ y1, y1, y1, y1, y1 };
 	list<Yuk> list3{ y2, y2, y2, y2, y2 };
 	list<Yuk> list4{ y3, y3, y3, y3, y3 };
 	list<Yuk> list5{ y4, y4, y4, y4, y4 };
 
-	//týra eklenecek yükler
+	// Tira eklenecek yukler
 	list<Yuk> list6;
 	for (auto i{ 0 }; i < 10; ++i) {
 		list6.push_back(y6);
 	}
 
-	//araç pointer vektör tanýmý
-	//bu sayede çalýþma zamanýnda hangi tür araç geleceðinin bilinmesine gerek yok
-	//15 araç bile fazla bence bu yüzden 20 yapmadým
-	//default consturctor yapýlabilirdi ama tercih etmedim
-	//çok daha rahat olurdu belki ama þimdi düþününce araç türünü nasýl belirteceðimi bilemedim
+	// Arac pointer vector tanimi
+	// Bu sayede calisma zamaninda hangi tur geleceginin bilinmesine gerek yok
 	vector<Arac*> aracPtr;
 
-	// 1
-	try {
-		aracPtr.push_back(new Kamyon{ "Kamyon", list1, "34LG1780", "Efe Kaya" });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 2
-	try {
-		aracPtr.push_back(new Kamyon{ "Kamyon", list2, "41PS3737", "Dilara Yönev" });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 3
-	try {
-		aracPtr.push_back(new Kamyon{ "Kamyon", list3, "64BYZ482", "Ozgur Uysal" });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 4
-	try {
-		aracPtr.push_back(new AcikKasa{ "Acik Kasa Kamyonet", list1, "24KGB171", "Fatma Akgün" });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 5
-	try {
-		aracPtr.push_back(new AcikKasa{ "Acik Kasa Kamyonet", list2, "24RAW292", "Demet Ozen" });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 6
-	try {
-		aracPtr.push_back(new AcikKasa{ "Acik Kasa Kamyonet", list3, "07MIT593", "Safiye Utkan" });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 7
-	try {
-		aracPtr.push_back(new SogutmaliKasa{ "Sogutmali Kasa Kamyonet", list1, "08MI6692", "Ethem Yýlmaz", -20 });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 8
-	try {
-		aracPtr.push_back(new SogutmaliKasa{ "Sogutmali Kasa Kamyonet", list2, "16MI5111", "Burcu Þahbaz", -25 });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 9
-	try {
-		aracPtr.push_back(new SogutmaliKasa{ "Sogutmali Kasa Kamyonet", list3, "06FBI137", "Fikri Elçi", -5 });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 10
-	try {
-		aracPtr.push_back(new Tir{ "dorsekodu1", "Tir", list1, "08MI6692", "Zuhal Pala" });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 11
-	try {
-		aracPtr.push_back(new Tir{ "dorsekodu2", "Tir", list6, "35KAH201", "Dogan Tutak" });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 12
-	try {
-		aracPtr.push_back(new Tir{ "dorsekodu4", "Tir", list6, "55ELMA22", "Sibel Sari" });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 13
-	try {
-		aracPtr.push_back(new KapaliKasa{ "Kapali Kasa Kamyonet", list3, "07SSD3448", "Halil Karaca" });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 14
-	try {
-		aracPtr.push_back(new KapaliKasa{ "Kapali Kasa Kamyonet", list3, "49MAK650", "Fatih Konak" });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
-	// 15
-	try {
-		aracPtr.push_back(new KapaliKasa{ "Kapali Kasa Kamyonet", list3, "77OP1092", "Murat Korkmaz" });
-	}
-	catch (const std::exception& e) {
-		cout << e.what() << endl;
-	}
+	{
+		// 1
+		try {
+			aracPtr.push_back(new Kamyon{ "Kamyon", list1, "34LG1780", "Efe Kaya" });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 2
+		try {
+			aracPtr.push_back(new Kamyon{ "Kamyon", list2, "41PS3737", "Dilara Yonev" });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 3
+		try {
+			aracPtr.push_back(new Kamyon{ "Kamyon", list3, "64BYZ482", "Ozgur Uysal" });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 4
+		try {
+			aracPtr.push_back(new AcikKasa{ "Acik Kasa Kamyonet", list1, "24KGB171", "Fatma Akgun" });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 5
+		try {
+			aracPtr.push_back(new AcikKasa{ "Acik Kasa Kamyonet", list2, "24RAW292", "Demet Ozen" });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 6
+		try {
+			aracPtr.push_back(new AcikKasa{ "Acik Kasa Kamyonet", list3, "07MIT593", "Safiye Utkan" });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 7
+		try {
+			aracPtr.push_back(new SogutmaliKasa{ "Sogutmali Kasa Kamyonet", list1, "08MI6692", "Ethem Yilmaz", -20 });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 8
+		try {
+			aracPtr.push_back(new SogutmaliKasa{ "Sogutmali Kasa Kamyonet", list2, "16MI5111", "Burcu Sahbaz", -25 });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 9
+		try {
+			aracPtr.push_back(new SogutmaliKasa{ "Sogutmali Kasa Kamyonet", list3, "06FBI137", "Fikri Elci", -5 });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 10
+		try {
+			aracPtr.push_back(new Tir{ "dorsekodu1", "Tir", list1, "08MI6692", "Zuhal Pala" });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 11
+		try {
+			aracPtr.push_back(new Tir{ "dorsekodu2", "Tir", list6, "35KAH201", "Dogan Tutak" });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 12
+		try {
+			aracPtr.push_back(new Tir{ "dorsekodu4", "Tir", list6, "55ELMA22", "Sibel Sari" });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 13
+		try {
+			aracPtr.push_back(new KapaliKasa{ "Kapali Kasa Kamyonet", list3, "07SSD3448", "Halil Karaca" });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 14
+		try {
+			aracPtr.push_back(new KapaliKasa{ "Kapali Kasa Kamyonet", list3, "49MAK650", "Fatih Konak" });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
+		// 15
+		try {
+			aracPtr.push_back(new KapaliKasa{ "Kapali Kasa Kamyonet", list3, "77OP1092", "Murat Korkmaz" });
+		}
+		catch (const std::exception& e) {
+			cout << e.what() << endl;
+		}
 
+	}
 
 	for (Arac* araba : aracPtr) {
 		cout << *araba << endl;
 	}
 
-
-	//çaþýþtýrýnca gördüðünüz gibi çeþitli hatalar veriyor
-
+	// Calistirinca olmasi gerektigi gibi bazilarinda hatalar veriyor
 
 	cout << "###########" << endl;
 	cout << "YUK EKLENECEK TIR................" << endl;
 	cout << "###########" << endl << endl;
 	cout << *aracPtr[5] << endl;
-	//týra 10 adet yük yükleme
+	// Tira 10 adet yuk yukleme
 	for (auto i{ 0 }; i < 10; ++i) {
 		aracPtr[5]->yukEkle(y7);
 	}
@@ -1376,26 +1334,23 @@ int main() {
 	cout << "###########" << endl << endl <<
 		*aracPtr[5] << endl;
 
-
-	//var olan yük listesi
+	// Var olan yuk listesi
 	cout << "###########" << endl;
 	cout << "YUK LISTESI.............." << endl;
 	cout << "###########" << endl << endl;
 	aracPtr[5]->printYukListesi();
 	cout << endl << "###########" << endl;
 
-
-	//burada içinde 20 yük olmuþ oluyor
-	//yazdirirken görüntü kirliliði yapacaðý için 6 taneye düþüreceðim
-	//eksiltmelerle birlikte sonunda 3 tane kalacak
+	// Burada icinde 20 yuk olmus oluyor
+	// Yazdirirken goruntu kirliligi yapacagi icin 6 taneye dusurdum
+	// Eksiltmelerle birlikte sonunda 3 tane kalacak
 	auto index{ 11 };
 	for (auto i{ 0 }; i < 7; ++i) {
 		aracPtr[5]->yukBosalt(index--);
 		aracPtr[5]->yukBosalt(1);
 	}
 
-
-	//alfabetik sýralýyor ardýndan 3. elemani çýkartýyor
+	// Alfabetik siraliyor ardindan 3. elemani cikartiyor
 	cout << "ALFABETIK SIRALAMA......................" << endl;
 	aracPtr[5]->yukSirala(Arac::adinaGore);
 	cout << "###########" << endl << endl;
@@ -1406,8 +1361,7 @@ int main() {
 	cout << "###########" << endl << endl;
 	aracPtr[5]->printYukListesi();
 
-
-	//aðýrlýða göre sýralýyor ve 3. elemaný çýkartýyor
+	// Agirliga gore siraliyor ve 3. elemani cikartiyor
 	cout << "###########" << endl;
 	cout << "AGIRLIGA GORE SIRALAMA......................" << endl;
 	aracPtr[5]->yukSirala(Arac::agirligaGoreBK);
@@ -1419,8 +1373,7 @@ int main() {
 	cout << "###########" << endl << endl;
 	aracPtr[5]->printYukListesi();
 
-
-	//hacme göre sýralýyor ve 3. elemaný çýkartýyor
+	// Hacme gore siraliyor ve 3. elemani cikartiyor
 	cout << "###########" << endl;
 	cout << "HACIME GORE SIRALAMA......................" << endl;
 	aracPtr[5]->yukSirala(Arac::hacmineGoreKB);
@@ -1432,7 +1385,6 @@ int main() {
 	cout << "###########" << endl << endl;
 	aracPtr[5]->printYukListesi();
 	cout << "###########" << endl;
-
 
 	return 0;
 }
