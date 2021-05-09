@@ -11,23 +11,23 @@
 #include <queue>
 #include <cstdlib>
 
-#define PLATE_LENGTH					0x0008
+#define PLATE_LENGTH				0x0008
 #define REMANING_PLATE_LENGHT			0x0006
-#define KAMYON_MIN_AGIRLIK				0x07D0
-#define KAMYON_MAX_AGIRLIK				0x2710
+#define KAMYON_MIN_AGIRLIK			0x07D0
+#define KAMYON_MAX_AGIRLIK			0x2710
 #define KAMYON_DEFAULT_MIN_AGIRLIK		0x05DC
 #define KAMYON_DEFAULT_MAX_AGIRLIK		0x0BB8
 #define KAPALI_KASA_MIN_HACIM			0x000A
 #define KAPALI_KASA_MAX_HACIM			0x001E
-#define SOGUTMALI_KASA_MIN_SICAKLIK	   -0x0028
-#define SOGUTMALI_KASA_MAX_SICAKLIK	   -0x000A
-#define TIR_MIN_HACIM					0x001E
-#define TIR_MAX_HACIM					0x0028
+#define SOGUTMALI_KASA_MIN_SICAKLIK	       -0x0028
+#define SOGUTMALI_KASA_MAX_SICAKLIK	       -0x000A
+#define TIR_MIN_HACIM				0x001E
+#define TIR_MAX_HACIM				0x0028
 
-#define KAMYON							"Kamyon"
-#define ACIK_KASA_KAMYONET				"Acik Kasa Kamyonet"
+#define KAMYON					"Kamyon"
+#define ACIK_KASA_KAMYONET			"Acik Kasa Kamyonet"
 #define SOGUTMALI_KASA_KAMYONET			"Sogutmali Kasa Kamyonet"
-#define TIR								"Tir"
+#define TIR					"Tir"
 
 using namespace std;
 
